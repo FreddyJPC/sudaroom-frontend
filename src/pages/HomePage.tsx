@@ -18,8 +18,8 @@ const HomePage = () => {
     <Box
       sx={{
         minHeight: '100vh',
-        maxHeight: '50vh',
-        width: '100vw',
+        width: '100%', 
+        overflowX: 'hidden', 
         padding: 0,
         margin: 0,
         backgroundColor: '#f9f9f9',
@@ -31,7 +31,7 @@ const HomePage = () => {
         color="default"
         elevation={0}
         sx={{
-          maxHeight:"70px",
+          maxHeight: "70px",
           boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', // Sombra para profundidad
         }}
       >

@@ -1,93 +1,147 @@
-import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, MenuItem } from '@mui/material';
-import { registerService } from '../services/authService';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import {
+  Card,
+  Form,
+  Input,
+  Button,
+  Typography,
+  Divider,
+  message,
+  Select,
+} from "antd";
+import {
+  UserOutlined,
+  MailOutlined,
+  LockOutlined,
+  EyeInvisibleOutlined,
+  EyeTwoTone,
+  GoogleOutlined,
+  AppleOutlined,
+} from "@ant-design/icons";
+import { registerService } from "../services/authService";
+import { useNavigate } from "react-router-dom";
+import "./RegisterPage.css";
+
+const { Title, Text, Link } = Typography;
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
-  const [nombre, setNombre] = useState('');
-  const [correo, setCorreo] = useState('');
-  const [contraseña, setContraseña] = useState('');
-  const [rol, setRol] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onFinish = async (values: {
+    nombre: string;
+    correo: string;
+    contraseña: string;
+    rol: string;
+  }) => {
+    setLoading(true);
     try {
-      await registerService(nombre, correo, contraseña, rol);
-      alert('Usuario registrado con éxito.');
-      navigate('/login'); // Redirige al login tras registrarse
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Error al registrar usuario');
+      const response = await registerService(
+        values.nombre,
+        values.correo,
+        values.contraseña,
+        values.rol
+      );
+      message.success(response.message || "Usuario registrado con éxito.");
+      navigate("/login");
+    } catch (error: any) {
+      message.error(
+        error.response?.data?.message || "Error al registrar usuario."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-      minHeight="100vh"
-    >
-      <Typography variant="h4" mb={2}>
-        Registrarse
-      </Typography>
-      {error && (
-        <Typography color="error" mb={2}>
-          {error}
-        </Typography>
-      )}
-      <form onSubmit={handleSubmit} style={{ width: '300px' }}>
-        <TextField
-          label="Nombre"
-          fullWidth
-          margin="normal"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-        />
-        <TextField
-          label="Correo"
-          type="email"
-          fullWidth
-          margin="normal"
-          value={correo}
-          onChange={(e) => setCorreo(e.target.value)}
-        />
-        <TextField
-          label="Contraseña"
-          type="password"
-          fullWidth
-          margin="normal"
-          value={contraseña}
-          onChange={(e) => setContraseña(e.target.value)}
-        />
-        <TextField
-          select
-          label="Rol"
-          fullWidth
-          margin="normal"
-          value={rol}
-          onChange={(e) => setRol(e.target.value)}
+    <div className="register-container">
+      <Card
+        className="register-card"
+        title={<Title level={3}>Crear una Cuenta</Title>}
+        bordered
+      >
+        <Form
+          name="register"
+          layout="vertical"
+          onFinish={onFinish}
+          requiredMark={false}
         >
-          <MenuItem value="estudiante">Estudiante</MenuItem>
-          <MenuItem value="profesor">Profesor</MenuItem>
-          
-        </TextField>
-        <Button type="submit" variant="contained" color="primary" fullWidth>
-          Registrarse
-        </Button>
-        <Button
-          variant="text"
-          color="secondary"
-          fullWidth
-          onClick={() => navigate('/login')}
-          sx={{ mt: 2 }}
-        >
-          Ya tengo una cuenta
-        </Button>
-      </form>
-    </Box>
+          <Form.Item
+            label="Nombre"
+            name="nombre"
+            rules={[
+              {
+                required: true,
+                message: "Por favor, ingresa tu nombre completo.",
+              },
+            ]}
+          >
+            <Input placeholder="Nombre completo" prefix={<UserOutlined />} />
+          </Form.Item>
+
+          <Form.Item
+            label="Correo"
+            name="correo"
+            rules={[
+              {
+                required: true,
+                message: "Por favor, ingresa tu correo electrónico.",
+              },
+              { type: "email", message: "Ingresa un correo válido." },
+            ]}
+          >
+            <Input placeholder="ejemplo@correo.com" prefix={<MailOutlined />} />
+          </Form.Item>
+
+          <Form.Item
+            label="Contraseña"
+            name="contraseña"
+            rules={[
+              { required: true, message: "Por favor, ingresa tu contraseña." },
+            ]}
+          >
+            <Input.Password
+              placeholder="••••••••"
+              prefix={<LockOutlined />}
+              iconRender={(visible) =>
+                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+              }
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Rol"
+            name="rol"
+            rules={[
+              { required: true, message: "Por favor, selecciona un rol." },
+            ]}
+          >
+            <Select placeholder="Selecciona tu rol">
+              <Select.Option value="estudiante">Estudiante</Select.Option>
+              <Select.Option value="profesor">Profesor</Select.Option>
+            </Select>
+          </Form.Item>
+
+          <Button type="primary" htmlType="submit" block loading={loading}>
+            Registrarse
+          </Button>
+        </Form>
+
+        <Divider>O regístrate con</Divider>
+
+        <div className="register-buttons">
+          <Button shape="circle" icon={<GoogleOutlined />} />
+          <Button shape="circle" icon={<AppleOutlined />} />
+        </div>
+
+        <Text className="login-text">
+          ¿Ya tienes una cuenta?{" "}
+          <Link onClick={() => navigate("/login")} className="login-link">
+            Inicia sesión aquí
+          </Link>
+        </Text>
+      </Card>
+    </div>
   );
 };
 
