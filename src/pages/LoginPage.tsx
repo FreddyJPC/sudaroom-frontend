@@ -3,13 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { loginService } from "../services/authService";
 import { Button, Card, Form, Input, Typography, Divider, message } from "antd";
-import {
-  UserOutlined,
-  LockOutlined,
-  GoogleOutlined,
-  AppleOutlined,
-} from "@ant-design/icons";
+import { UserOutlined, LockOutlined, AppleOutlined } from "@ant-design/icons";
 import "./LoginPage.css";
+import GoogleAuthButton from "../components/GoogleAuthButton";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const { Title, Text, Link } = Typography;
 
@@ -18,6 +15,7 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
+  // Lógica para manejar el formulario de inicio de sesión
   const onFinish = async (values: { email: string; password: string }) => {
     setLoading(true);
     try {
@@ -32,85 +30,90 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  // Lógica para manejar el éxito de Google Login
+  const handleGoogleSuccess = (user: any) => {
+    console.log("Usuario autenticado con Google:", user);
+    // Aquí puedes implementar la lógica para manejar el inicio de sesión con Google
+    // Por ejemplo: guardar token, redirigir al dashboard, etc.
+    message.success("Inicio de sesión con Google exitoso");
+    navigate("/dashboard");
+  };
+
   return (
     <div className="login-container">
       <div className="left-section"></div>
 
       <div className="right-section">
-        <Card className="login-card" bordered>
-          
-          <div className="login-title">
-            <Title level={3}>Iniciar Sesión</Title>
-          </div>
+        <GoogleOAuthProvider clientId="TU_CLIENT_ID_DE_GOOGLE">
+          <Card className="login-card" bordered>
+            <div className="login-title">
+              <Title level={3}>Iniciar Sesión</Title>
+            </div>
 
-         
-          <Form
-            name="login"
-            layout="vertical"
-            onFinish={onFinish}
-            requiredMark={false}
-          >
-            
-            <Form.Item
-              name="email"
-              rules={[
-                {
-                  required: true,
-                  message: "Por favor, ingresa tu correo electrónico",
-                },
-                {
-                  type: "email",
-                  message: "Ingresa un correo electrónico válido",
-                },
-              ]}
+            <Form
+              name="login"
+              layout="vertical"
+              onFinish={onFinish}
+              requiredMark={false}
             >
-              <Input placeholder="E-mail" prefix={<UserOutlined />} />
-            </Form.Item>
+              <Form.Item
+                name="email"
+                rules={[
+                  {
+                    required: true,
+                    message: "Por favor, ingresa tu correo electrónico",
+                  },
+                  {
+                    type: "email",
+                    message: "Ingresa un correo electrónico válido",
+                  },
+                ]}
+              >
+                <Input placeholder="E-mail" prefix={<UserOutlined />} />
+              </Form.Item>
 
-            
-            <Form.Item
-              name="password"
-              rules={[
-                { required: true, message: "Por favor, ingresa tu contraseña" },
-              ]}
-            >
-              <Input.Password
-                placeholder="Password"
-                prefix={<LockOutlined />}
-              />
-            </Form.Item>
+              <Form.Item
+                name="password"
+                rules={[
+                  {
+                    required: true,
+                    message: "Por favor, ingresa tu contraseña",
+                  },
+                ]}
+              >
+                <Input.Password
+                  placeholder="Password"
+                  prefix={<LockOutlined />}
+                />
+              </Form.Item>
 
-           
-            <Button
-              className="primary"
-              htmlType="submit"
-              block
-              loading={loading}
-            >
-              Iniciar Sesión
-            </Button>
-          </Form>
+              <Button
+                className="primary"
+                htmlType="submit"
+                block
+                loading={loading}
+              >
+                Iniciar Sesión
+              </Button>
+            </Form>
 
-          
-          <Divider>O continúa con</Divider>
+            <Divider>O continúa con</Divider>
 
-          
-          <div className="login-buttons">
-            <Button shape="circle" icon={<GoogleOutlined />} />
-            <Button shape="circle" icon={<AppleOutlined />} />
-          </div>
+            <div className="login-buttons">
+              <GoogleAuthButton onSuccess={handleGoogleSuccess} />
+            </div>
 
-          
-          <Text className="register-text">
-            ¿No tienes cuenta?{" "}
-            <Link
-              onClick={() => navigate("/register")}
-              className="register-link"
-            >
-              Regístrate aquí
-            </Link>
-          </Text>
-        </Card>
+            <Text className="register-text">
+              ¿No tienes cuenta?{" "}
+              <Link
+                onClick={() => navigate("/register")}
+                className="register-link"
+              >
+                Regístrate aquí
+              </Link>
+            </Text>
+          </Card>
+        </GoogleOAuthProvider>
       </div>
     </div>
   );
