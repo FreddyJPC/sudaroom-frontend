@@ -12,13 +12,11 @@ const RegisterPage: React.FC = () => {
 
   const handleGoogleSuccess = (user: any) => {
     console.log("Usuario autenticado con Google:", user);
-    // Lógica adicional, como guardar el usuario en el backend
   };
 
   const onFinish = (values: any) => {
     setLoading(true);
     console.log(values);
-    // Aquí iría tu lógica de registro
     setTimeout(() => setLoading(false), 2000);
   };
 

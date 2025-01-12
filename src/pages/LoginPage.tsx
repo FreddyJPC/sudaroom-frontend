@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { loginService } from "../services/authService";
 import { Button, Card, Form, Input, Typography, Divider, message } from "antd";
-import { UserOutlined, LockOutlined, AppleOutlined } from "@ant-design/icons";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import "./LoginPage.css";
 import GoogleAuthButton from "../components/GoogleAuthButton";
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -15,7 +15,6 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  // Lógica para manejar el formulario de inicio de sesión
   const onFinish = async (values: { email: string; password: string }) => {
     setLoading(true);
     try {
@@ -30,11 +29,8 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  // Lógica para manejar el éxito de Google Login
   const handleGoogleSuccess = (user: any) => {
     console.log("Usuario autenticado con Google:", user);
-    // Aquí puedes implementar la lógica para manejar el inicio de sesión con Google
-    // Por ejemplo: guardar token, redirigir al dashboard, etc.
     message.success("Inicio de sesión con Google exitoso");
     navigate("/dashboard");
   };
