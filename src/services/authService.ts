@@ -10,16 +10,32 @@ export const loginService = async (email: string, password: string) => {
 
   const { token } = response.data;
 
-  // Decodifica el token para extraer información del usuario (opcional)
+  
   const payload = JSON.parse(atob(token.split('.')[1]));
   const role = payload.role;
   const userId = payload.id;
 
-  // Devuelve información completa del usuario
+  
   return {
-    user: { id: userId, role }, // Incluye user si es necesario
+    user: { id: userId, role },
     token,
     role,
     userId,
   };
+};
+
+export const registerService = async (
+  nombre: string,
+  correo: string,
+  contraseña: string,
+  rol: string
+) => {
+  const response = await axios.post(`${BASE_URL}/register`, {
+    nombre,
+    correo,
+    contraseña,
+    rol,
+  });
+
+  return response.data; // Ajusta según lo que tu backend devuelva
 };

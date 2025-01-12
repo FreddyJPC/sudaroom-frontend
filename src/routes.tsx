@@ -1,13 +1,14 @@
-import { Route, Routes } from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
-import DashboardPage from './pages/DashboardPage';
-import AdminPanel from './pages/AdminPanel';
-import UnauthorizedPage from './pages/UnauthorizedPage';
-import PrivateRoute from './components/PrivateRoute';
-import ClassesPage from './pages/ClassesPage';
-import CreateClassPage from './pages/CreateClassPage';
-import ClassDetailsPage from './pages/ClassDetailsPage';
-import HomePage from './pages/HomePage'; // Importamos la nueva página
+import { Route, Routes } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import DashboardPage from "./pages/DashboardPage";
+import AdminPanel from "./pages/AdminPanel";
+import UnauthorizedPage from "./pages/UnauthorizedPage";
+import PrivateRoute from "./components/PrivateRoute";
+import ClassesPage from "./pages/ClassesPage";
+import CreateClassPage from "./pages/CreateClassPage";
+import ClassDetailsPage from "./pages/ClassDetailsPage";
+import HomePage from "./pages/HomePage"; // Importamos la nueva página
+import RegisterPage from "./pages/RegisterPage";
 
 const RouterComponent = () => {
   return (
@@ -18,12 +19,14 @@ const RouterComponent = () => {
       {/* Ruta pública */}
       <Route path="/login" element={<LoginPage />} />
       
+      <Route path="/register" element={<RegisterPage />} />
+
       {/* Ruta para usuarios no autorizados */}
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
       {/* Ruta protegida para profesores y estudiantes */}
       <Route
-        element={<PrivateRoute allowedRoles={['profesor', 'estudiante']} />}
+        element={<PrivateRoute allowedRoles={["profesor", "estudiante"]} />}
       >
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/clases" element={<ClassesPage />} />
@@ -32,9 +35,7 @@ const RouterComponent = () => {
       </Route>
 
       {/* Ruta protegida para administradores */}
-      <Route
-        element={<PrivateRoute allowedRoles={['administrador']} />}
-      >
+      <Route element={<PrivateRoute allowedRoles={["administrador"]} />}>
         <Route path="/admin" element={<AdminPanel />} />
       </Route>
     </Routes>

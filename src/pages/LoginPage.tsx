@@ -1,112 +1,118 @@
-import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, Link, Divider } from '@mui/material';
-import { useAuth } from '../context/AuthContext';
-import { loginService } from '../services/authService';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { loginService } from "../services/authService";
+import { Button, Card, Form, Input, Typography, Divider, message } from "antd";
+import {
+  UserOutlined,
+  LockOutlined,
+  GoogleOutlined,
+  AppleOutlined,
+} from "@ant-design/icons";
+import "./LoginPage.css";
+
+const { Title, Text, Link } = Typography;
 
 const LoginPage: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onFinish = async (values: { email: string; password: string }) => {
+    setLoading(true);
     try {
-      const { token } = await loginService(email, password);
+      const { token } = await loginService(values.email, values.password);
       login(token);
-      navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Error al iniciar sesión');
+      navigate("/dashboard");
+      message.success("Inicio de sesión exitoso");
+    } catch (error: any) {
+      message.error(error.response?.data?.message || "Error al iniciar sesión");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Box display="flex" minHeight="100vh" width="100%" >
-      {/* Sección izquierda */}
-      {/* <Box
-        flex={1}
-        bgcolor="green"
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        p={4}
-        color="white"
-      >
-        <Typography variant="h3" mb={2}>
-          Únete a nuestra comunidad
-        </Typography>
-        <Typography variant="body1" maxWidth="300px" textAlign="center">
-          Aprende y mejora tus habilidades con nosotros. ¡Es rápido y fácil!
-        </Typography>
-      </Box> */}
+    <div className="login-container">
+      <div className="left-section"></div>
 
-      {/* Sección derecha */}
-      <Box
-        flex={1}
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        p={4}
-        bgcolor="white"
-      >
-        <Typography variant="h4" mb={2}>
-          Iniciar Sesión
-        </Typography>
-        {error && (
-          <Typography color="error" mb={2}>
-            {error}
-          </Typography>
-        )}
-        <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '300px' }}>
-          <TextField
-            label="Correo electrónico"
-            type="email"
-            fullWidth
-            margin="normal"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextField
-            label="Contraseña"
-            type="password"
-            fullWidth
-            margin="normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mb: 2 }}>
-            Iniciar Sesión
-          </Button>
+      <div className="right-section">
+        <Card className="login-card" bordered>
+          
+          <div className="login-title">
+            <Title level={3}>Iniciar Sesión</Title>
+          </div>
 
-          <Divider sx={{ width: '100%', maxWidth: '300px', my: 2 }} />
-        
-        <Button variant="outlined" color="primary" fullWidth sx={{ mb: 2 }}>
-          Continúa con Google
-        </Button>
-        <Button variant="outlined" color="secondary" fullWidth>
-          Continúa con Apple
-        </Button>
-        
-        </form>
-
-
-
-        <Typography mt={2}>
-          ¿No tienes cuenta?{' '}
-          <Link
-            component="button"
-            onClick={() => navigate('/register')}
-            sx={{ cursor: 'pointer', textDecoration: 'underline' }}
+         
+          <Form
+            name="login"
+            layout="vertical"
+            onFinish={onFinish}
+            requiredMark={false}
           >
-            Regístrate aquí
-          </Link>
-        </Typography>
-      </Box>
-    </Box>
+            
+            <Form.Item
+              name="email"
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor, ingresa tu correo electrónico",
+                },
+                {
+                  type: "email",
+                  message: "Ingresa un correo electrónico válido",
+                },
+              ]}
+            >
+              <Input placeholder="E-mail" prefix={<UserOutlined />} />
+            </Form.Item>
+
+            
+            <Form.Item
+              name="password"
+              rules={[
+                { required: true, message: "Por favor, ingresa tu contraseña" },
+              ]}
+            >
+              <Input.Password
+                placeholder="Password"
+                prefix={<LockOutlined />}
+              />
+            </Form.Item>
+
+           
+            <Button
+              className="primary"
+              htmlType="submit"
+              block
+              loading={loading}
+            >
+              Iniciar Sesión
+            </Button>
+          </Form>
+
+          
+          <Divider>O continúa con</Divider>
+
+          
+          <div className="login-buttons">
+            <Button shape="circle" icon={<GoogleOutlined />} />
+            <Button shape="circle" icon={<AppleOutlined />} />
+          </div>
+
+          
+          <Text className="register-text">
+            ¿No tienes cuenta?{" "}
+            <Link
+              onClick={() => navigate("/register")}
+              className="register-link"
+            >
+              Regístrate aquí
+            </Link>
+          </Text>
+        </Card>
+      </div>
+    </div>
   );
 };
 
