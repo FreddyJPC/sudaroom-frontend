@@ -1,71 +1,79 @@
 import React from 'react';
-import { Box, Typography, Button, Grid, Card, CardContent } from '@mui/material';
+import { Layout, Typography, Button, Row, Col } from 'antd'; // Usamos Row y Col para diseño responsivo
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import Header from '../components/Header'; // Importamos el Header creado anteriormente
+
+const { Content } = Layout;
 
 const DashboardPage: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
   return (
-    <Box p={3}>
-      {/* Interfaz de bienvenida */}
-      <Typography variant="h4" mb={4}>
-        Bienvenido, {user?.nombre || 'Usuario'}
-      </Typography>
+    <Layout style={{ minHeight: '100vh' }}>
+      {/* Header */}
+      <Header />
 
-      <Grid container spacing={3}>
-        {/* Botón para ir a la página de clases */}
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Gestiona tus clases</Typography>
-              <Typography variant="body2">
-                Consulta las clases disponibles, inscríbete o crea nuevas clases como profesor.
-              </Typography>
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ mt: 2 }}
-                onClick={() => navigate('/clases')} // Redirige a la página de clases
-              >
-                Ir a Clases
-              </Button>
-            </CardContent>
-          </Card>
-        </Grid>
+      {/* Contenido del dashboard */}
+      <Content
+        style={{
+          padding: '24px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {/* Llamado a la acción principal */}
+        <Typography.Title
+          level={2}
+          style={{ textAlign: 'center', marginBottom: '32px', fontWeight: 'bold' }}
+        >
+          ¿Qué deseas hacer?
+        </Typography.Title>
 
-        {/* Ejemplo: Tarjeta para tutorías disponibles */}
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Tutorías Disponibles</Typography>
-              <Typography variant="body2">
-                Revisa las tutorías abiertas para inscribirte.
-              </Typography>
-              <Button variant="contained" color="primary" sx={{ mt: 2 }}>
-                Ver tutorías
-              </Button>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* Ejemplo: Tarjeta para tus tutorías */}
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Mis Tutorías</Typography>
-              <Typography variant="body2">
-                Visualiza las tutorías en las que estás inscrito.
-              </Typography>
-              <Button variant="contained" color="secondary" sx={{ mt: 2 }}>
-                Ver mis tutorías
-              </Button>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-    </Box>
+        {/* Opciones principales */}
+        <Row gutter={[16, 16]} justify="center" style={{ width: '100%' }}>
+          <Col xs={24} sm={12} md={8} style={{ display: 'flex', justifyContent: 'center' }}>
+            <Button
+              type="primary"
+              size="large"
+              style={{
+                width: '100%',
+                height: '80px',
+                fontSize: '18px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              onClick={() => navigate('/clases')}
+            >
+              Buscar Clases
+            </Button>
+          </Col>
+          <Col xs={24} sm={12} md={8} style={{ display: 'flex', justifyContent: 'center' }}>
+            <Button
+              type="default"
+              size="large"
+              style={{
+                width: '100%',
+                height: '80px',
+                fontSize: '18px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderColor: '#1890ff',
+                color: '#1890ff',
+              }}
+              onClick={() => navigate('/profesores')}
+            >
+              Buscar Profesores
+            </Button>
+          </Col>
+        </Row>
+      </Content>
+    </Layout>
   );
 };
 
