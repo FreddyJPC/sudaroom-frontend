@@ -7,8 +7,9 @@ import PrivateRoute from "./components/PrivateRoute";
 import ClassesPage from "./pages/ClassesPage";
 import CreateClassPage from "./pages/CreateClassPage";
 import ClassDetailsPage from "./pages/ClassDetailsPage";
-import HomePage from "./pages/HomePage"; // Importamos la nueva página
+import HomePage from "./pages/HomePage"; // Página principal
 import RegisterPage from "./pages/RegisterPage";
+import ProfesorPage from "./pages/ProfesorPage"; // Importamos la nueva página
 
 const RouterComponent = () => {
   return (
@@ -16,15 +17,14 @@ const RouterComponent = () => {
       {/* Página de inicio */}
       <Route path="/" element={<HomePage />} />
 
-      {/* Ruta pública */}
+      {/* Rutas públicas */}
       <Route path="/login" element={<LoginPage />} />
-      
       <Route path="/register" element={<RegisterPage />} />
 
       {/* Ruta para usuarios no autorizados */}
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
-      {/* Ruta protegida para profesores y estudiantes */}
+      {/* Rutas protegidas para profesores y estudiantes */}
       <Route
         element={<PrivateRoute allowedRoles={["profesor", "estudiante"]} />}
       >
@@ -32,9 +32,10 @@ const RouterComponent = () => {
         <Route path="/clases" element={<ClassesPage />} />
         <Route path="/clases/crear" element={<CreateClassPage />} />
         <Route path="/clases/:id" element={<ClassDetailsPage />} />
+        <Route path="/profesores" element={<ProfesorPage />} /> {/* Nueva ruta */}
       </Route>
 
-      {/* Ruta protegida para administradores */}
+      {/* Rutas protegidas para administradores */}
       <Route element={<PrivateRoute allowedRoles={["administrador"]} />}>
         <Route path="/admin" element={<AdminPanel />} />
       </Route>
