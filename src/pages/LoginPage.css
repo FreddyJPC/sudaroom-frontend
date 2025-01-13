@@ -34,11 +34,13 @@
   }
   
   
-  .login-buttons {
+  .register-buttons {
     display: flex;
-    justify-content: center;
-    gap: 16px; 
+    flex-direction: column;
+    gap: 16px;
     margin-top: 16px;
+    justify-content: center;
+    align-items: center;
   }
   
   .register-text {
@@ -57,3 +59,17 @@
     text-decoration: underline;
   }
   
+  @media (max-width: 768px) {
+    .login-container {
+      flex-direction: column; /* Apila las secciones verticalmente */
+    }
+  
+    .left-section {
+      display: none; /* Oculta la parte izquierda en pantallas pequeñas */
+    }
+  
+    .right-section {
+      flex: none;
+      height: 100%; /* La sección derecha ocupa toda la pantalla */
+    }
+  }
