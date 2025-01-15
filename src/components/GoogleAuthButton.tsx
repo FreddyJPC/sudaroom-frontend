@@ -13,8 +13,16 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
 }) => {
   const handleSuccess = (credentialResponse: CredentialResponse) => {
     if (credentialResponse.credential) {
-      const decodedUser = jwtDecode(credentialResponse.credential);
-      onSuccess(decodedUser);
+      try {
+        const decodedUser  = jwtDecode(credentialResponse.credential);
+        onSuccess(decodedUser );
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        if (onFailure) onFailure();
+      }
+    } else {
+      console.error("No credential received");
+      if (onFailure) onFailure();
     }
   };
 
@@ -27,7 +35,7 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
     <GoogleLogin
       onSuccess={handleSuccess}
       onError={handleError}
-      useOneTap
+      useOneTap={false} 
       text="continue_with"
     />
   );

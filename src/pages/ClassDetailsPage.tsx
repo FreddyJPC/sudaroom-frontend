@@ -1,8 +1,9 @@
-// src/pages/ClassDetailsPage.tsx
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import BackButton from "../components/BackButton";
+import "./ClassDetailsPage.css"; // Estilos actualizados
 
 type Clase = {
   id_clase: number;
@@ -29,7 +30,7 @@ const ClassDetailsPage: React.FC = () => {
         });
         setClassDetails(response.data);
       } catch (error) {
-        console.error('Error al obtener los detalles de la clase:', error);
+        console.error("Error al obtener los detalles de la clase:", error);
       }
     };
 
@@ -37,19 +38,47 @@ const ClassDetailsPage: React.FC = () => {
   }, [id, token]);
 
   if (!classDetails) {
-    return <p>Cargando detalles de la clase...</p>;
+    return (
+      <div className="class-details-loading">
+        <p>Cargando detalles de la clase...</p>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h1>{classDetails.titulo}</h1>
-      <p>{classDetails.descripcion}</p>
-      <p>Profesor: {classDetails.profesor}</p>
-      <p>Carrera: {classDetails.carrera}</p>
-      <p>Fecha y hora: {new Date(classDetails.fecha_hora).toLocaleString()}</p>
-      <p>Duración: {classDetails.duracion} minutos</p>
-      <p>Capacidad máxima: {classDetails.capacidad_maxima}</p>
-      <p>Estado: {classDetails.estado}</p>
+    <div className="class-details-container">
+      <BackButton />
+      <div className="class-details-card">
+        <h1 className="class-title">{classDetails.titulo}</h1>
+        <p className="class-description">{classDetails.descripcion}</p>
+        <div className="class-info">
+          <div className="class-info-section">
+            <p>
+              <strong>Profesor:</strong> {classDetails.profesor}
+            </p>
+            <p>
+              <strong>Carrera:</strong> {classDetails.carrera}
+            </p>
+          </div>
+          <div className="class-info-section">
+            <p>
+              <strong>Fecha y hora:</strong>{" "}
+              {new Date(classDetails.fecha_hora).toLocaleString()}
+            </p>
+            <p>
+              <strong>Duración:</strong> {classDetails.duracion} minutos
+            </p>
+          </div>
+          <div className="class-info-section">
+            <p>
+              <strong>Capacidad máxima:</strong> {classDetails.capacidad_maxima}
+            </p>
+            <p>
+              <strong>Estado:</strong> {classDetails.estado}
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

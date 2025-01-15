@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-import { Card, Form, Input, Button, Typography, Divider, Select } from "antd";
-import { UserOutlined, MailOutlined, LockOutlined, EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import { Card, Form, Input, Button, Typography, Select } from "antd";
+import {
+  UserOutlined,
+  MailOutlined,
+  LockOutlined,
+  EyeInvisibleOutlined,
+  EyeTwoTone,
+} from "@ant-design/icons";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import GoogleAuthButton from "../components/GoogleAuthButton";
 import "./RegisterPage.css";
 
 const { Title, Text } = Typography;
 
 const RegisterPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
-
-  const handleGoogleSuccess = (user: any) => {
-    console.log("Usuario autenticado con Google:", user);
-  };
 
   const onFinish = (values: any) => {
     setLoading(true);
@@ -26,7 +27,10 @@ const RegisterPage: React.FC = () => {
       <div className="register-form">
         <GoogleOAuthProvider clientId="TU_CLIENT_ID_DE_GOOGLE">
           <Card className="register-card">
-            <Title level={3} style={{ textAlign: 'center', marginBottom: '24px' }}>
+            <Title
+              level={3}
+              style={{ textAlign: "center", marginBottom: "24px" }}
+            >
               Crear una Cuenta
             </Title>
 
@@ -39,38 +43,61 @@ const RegisterPage: React.FC = () => {
               <Form.Item
                 label="Nombre"
                 name="nombre"
-                rules={[{ required: true, message: "Por favor, ingresa tu nombre completo." }]}
+                rules={[
+                  {
+                    required: true,
+                    message: "Por favor, ingresa tu nombre completo.",
+                  },
+                ]}
               >
-                <Input placeholder="Nombre completo" prefix={<UserOutlined />} />
+                <Input
+                  placeholder="Nombre completo"
+                  prefix={<UserOutlined />}
+                />
               </Form.Item>
 
               <Form.Item
                 label="Correo"
                 name="correo"
                 rules={[
-                  { required: true, message: "Por favor, ingresa tu correo electrónico." },
+                  {
+                    required: true,
+                    message: "Por favor, ingresa tu correo electrónico.",
+                  },
                   { type: "email", message: "Ingresa un correo válido." },
                 ]}
               >
-                <Input placeholder="ejemplo@correo.com" prefix={<MailOutlined />} />
+                <Input
+                  placeholder="ejemplo@correo.com"
+                  prefix={<MailOutlined />}
+                />
               </Form.Item>
 
               <Form.Item
                 label="Contraseña"
                 name="contraseña"
-                rules={[{ required: true, message: "Por favor, ingresa tu contraseña." }]}
+                rules={[
+                  {
+                    required: true,
+                    message: "Por favor, ingresa tu contraseña.",
+                  },
+                ]}
               >
                 <Input.Password
                   placeholder="••••••••"
                   prefix={<LockOutlined />}
-                  iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                  iconRender={(visible) =>
+                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                  }
                 />
               </Form.Item>
 
               <Form.Item
                 label="Rol"
                 name="rol"
-                rules={[{ required: true, message: "Por favor, selecciona un rol." }]}
+                rules={[
+                  { required: true, message: "Por favor, selecciona un rol." },
+                ]}
               >
                 <Select placeholder="Selecciona tu rol">
                   <Select.Option value="estudiante">Estudiante</Select.Option>
@@ -79,17 +106,16 @@ const RegisterPage: React.FC = () => {
               </Form.Item>
 
               <Form.Item>
-                <Button type="primary" htmlType="submit" block loading={loading}>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  block
+                  loading={loading}
+                >
                   Registrarse
                 </Button>
               </Form.Item>
             </Form>
-
-            <Divider>O regístrate con</Divider>
-
-            <div className="register-buttons">
-              <GoogleAuthButton onSuccess={handleGoogleSuccess} />
-            </div>
 
             <div className="login-text">
               <Text>

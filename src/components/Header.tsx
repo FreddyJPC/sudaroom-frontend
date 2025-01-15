@@ -7,12 +7,16 @@ const { Header: AntHeader } = Layout;
 const Header: React.FC = () => {
   const menu = (
     <Menu>
-      <Menu.Item key="profile">
+      <Menu.Item key="mi-perfil">
         <a href="/mi-perfil">Mi Perfil</a>
       </Menu.Item>
       <Divider style={{ margin: '8px 0' }} />
-      <Menu.Item key="logout">
-        <a href="/logout">Cerrar Sesión</a>
+      <Menu.Item key="admin">
+        <a href="/admin">Administrador</a>
+      </Menu.Item>
+      <Divider style={{ margin: '8px 0' }} />
+      <Menu.Item key="login">
+        <a href="/login">Cerrar Sesión</a>
       </Menu.Item>
     </Menu>
   );
@@ -30,14 +34,14 @@ const Header: React.FC = () => {
       }}
     >
       {/* Nombre de la aplicación */}
-      <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#1890ff' }}>
+      <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#008080' }}>
         SUDAROOM
       </div>
 
       {/* Icono de usuario y menú desplegable */}
       <Dropdown overlay={menu} placement="bottomRight" arrow>
         <Avatar
-          style={{ cursor: 'pointer', backgroundColor: '#1890ff' }}
+          style={{ cursor: 'pointer', backgroundColor: '#008080' }}
           icon={<UserOutlined />}
         />
       </Dropdown>
