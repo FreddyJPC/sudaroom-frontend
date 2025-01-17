@@ -10,7 +10,7 @@ interface UserProfile {
   correo: string;
   rol: string;
   fecha_creacion: string;
-  carrera?: string; // Campo opcional
+  carrera?: string; 
 }
 
 <BackButton />;
