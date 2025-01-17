@@ -3,13 +3,13 @@ import { Table, Button, Modal, Form, Input, message, Popconfirm } from 'antd';
 import axios from 'axios';
 
 const AdminPanel: React.FC = () => {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<any[]>([]); // Inicializamos como un arreglo vacío
   const [loading, setLoading] = useState(false);
   const [editingUser, setEditingUser] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
 
-  const token = localStorage.getItem('token'); 
+  const token = localStorage.getItem('token'); // Obtén el token desde el almacenamiento local
 
   const axiosInstance = axios.create({
     baseURL: '/api/users',
@@ -22,7 +22,12 @@ const AdminPanel: React.FC = () => {
     try {
       setLoading(true);
       const response = await axiosInstance.get('/');
-      setUsers(response.data);
+      // Verificamos que la respuesta sea un arreglo
+      if (Array.isArray(response.data)) {
+        setUsers(response.data);
+      } else {
+        throw new Error('Datos inválidos');
+      }
     } catch (error) {
       message.error('Error al obtener los usuarios.');
     } finally {

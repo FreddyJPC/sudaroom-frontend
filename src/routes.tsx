@@ -21,17 +21,18 @@ const RouterComponent = () => {
       {/* Rutas públicas */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="/mi-perfil" element={<Profile/>} />
+      <Route path="/mi-perfil" element={<Profile />} />
+      <Route path="/admin" element={<AdminPanel />} />
 
       {/* Ruta para usuarios no autorizados */}
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
       {/* Rutas protegidas para profesores y estudiantes */}
       <Route
-        element={<PrivateRoute allowedRoles={["profesor", "estudiante"]} />}
+        element={<PrivateRoute allowedRoles={["profesor", "estudiante","administrador"]} />}
       >
         <Route path="/dashboard" element={<DashboardPage />} />
-        
+
         <Route path="/clases" element={<ClassesPage />} />
         <Route path="/clases/crear" element={<CreateClassPage />} />
         <Route path="/clases/:id" element={<ClassDetailsPage />} />
@@ -39,9 +40,11 @@ const RouterComponent = () => {
       </Route>
 
       {/* Rutas protegidas para administradores */}
-      <Route element={<PrivateRoute allowedRoles={["administrador"]} />}>
+      <Route element={<PrivateRoute allowedRoles={['administrador']} />}>
         <Route path="/admin" element={<AdminPanel />} />
       </Route>
+
+
     </Routes>
   );
 };

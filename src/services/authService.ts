@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
+
 
 const BASE_URL = 'http://localhost:5000/api/users';
 
@@ -11,8 +13,8 @@ export const loginService = async (email: string, password: string) => {
   const { token } = response.data;
 
   
-  const payload = JSON.parse(atob(token.split('.')[1]));
-  const role = payload.role;
+  const payload: { id: number; rol: string } = jwtDecode(token);
+  const role = payload.rol;
   const userId = payload.id;
 
   
