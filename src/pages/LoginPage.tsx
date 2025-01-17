@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { loginService } from "../services/authService";
-import { Button, Card, Form, Input, Typography, Divider, message } from "antd";
+import { Button, Card, Form, Input, Typography, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import "./LoginPage.css";
-import GoogleAuthButton from "../components/GoogleAuthButton";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const { Title, Text, Link } = Typography;
@@ -27,12 +26,6 @@ const LoginPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleGoogleSuccess = (user: any) => {
-    console.log("Usuario autenticado con Google:", user);
-    message.success("Inicio de sesión con Google exitoso");
-    navigate("/dashboard");
   };
 
   return (
@@ -92,12 +85,6 @@ const LoginPage: React.FC = () => {
                 Iniciar Sesión
               </Button>
             </Form>
-
-            <Divider>O continúa con</Divider>
-
-            <div className="login-buttons">
-              <GoogleAuthButton onSuccess={handleGoogleSuccess} />
-            </div>
 
             <Text className="register-text">
               ¿No tienes cuenta?{" "}
