@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { useAuth } from "../context/AuthContext";
-import BackButton from "../components/BackButton";
+import { useAuth } from "../../context/AuthContext";
+import BackButton from "../../components/BackButton";
 import "./ClassDetailsPage.css"; // Estilos actualizados
 
 type Clase = {

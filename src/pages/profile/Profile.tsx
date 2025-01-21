@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import BackButton from "../components/BackButton";
-import { useAuth } from "../context/AuthContext";
+import BackButton from "../../components/BackButton";
+import { useAuth } from "../../context/AuthContext";
 
 interface UserProfile {
-  id_usuario: number;
   nombre: string;
   correo: string;
   rol: string;
-  fecha_creacion: string;
-  carrera?: string; 
+  carrera?: string;
 }
+
+const API_BASE_URL = 'http://localhost:5000';
 
 <BackButton />;
 const Profile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  console.log("ID del usuario:", id); // Verifica el ID aquí
   const { token } = useAuth();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -25,7 +26,7 @@ const Profile: React.FC = () => {
     const fetchUserProfile = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`/api/users/${id}`, {
+        const response = await axios.get(`${API_BASE_URL}/api/users/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUserProfile(response.data);
@@ -47,9 +48,6 @@ const Profile: React.FC = () => {
     <div style={{ padding: "20px", maxWidth: "600px", margin: "0 auto" }}>
       <h1>Perfil de Usuario</h1>
       <div style={{ marginBottom: "15px" }}>
-        <strong>ID:</strong> {userProfile.id_usuario}
-      </div>
-      <div style={{ marginBottom: "15px" }}>
         <strong>Nombre:</strong> {userProfile.nombre}
       </div>
       <div style={{ marginBottom: "15px" }}>
@@ -57,10 +55,6 @@ const Profile: React.FC = () => {
       </div>
       <div style={{ marginBottom: "15px" }}>
         <strong>Rol:</strong> {userProfile.rol}
-      </div>
-      <div style={{ marginBottom: "15px" }}>
-        <strong>Fecha de creación:</strong>{" "}
-        {new Date(userProfile.fecha_creacion).toLocaleDateString()}
       </div>
       {userProfile.carrera && (
         <div style={{ marginBottom: "15px" }}>

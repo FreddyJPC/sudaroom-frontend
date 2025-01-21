@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { loginService } from "../services/authService";
+import { useAuth } from "../../context/AuthContext";
+import { loginService } from "../../services/authService";
 import { Button, Card, Form, Input, Typography, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import "./LoginPage.css";
