@@ -39,7 +39,8 @@ const RouterComponent = () => {
         <Route path="/clases" element={<ClassesPage />} />
         <Route path="/clases/crear" element={<CreateClassPage />} />
         <Route path="/clases/:id" element={<ClassDetailsPage />} />
-        <Route path="/profesores" element={<ProfesorPage />} />{" "}
+        <Route path="/profesores" element={<ProfesorPage />} />
+
       </Route>
 
       {/* Rutas protegidas para administradores */}

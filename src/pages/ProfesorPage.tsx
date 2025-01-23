@@ -1,32 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Typography, Input, Row, Col, Card, Button, Spin, Empty } from 'antd';
+import { Layout, Typography, Row, Col, Card, Button, Spin, Empty, Select } from 'antd';
 import axios from 'axios';
 import Header from '../components/Header'; // Header que ya implementamos
 
 const { Content } = Layout;
-const { Search } = Input;
+const { Option } = Select;
 
 interface Profesor {
   id_usuario: number;
   nombre: string;
   carrera: string;
   correo: string;
-  materias: string; // Asumimos que esta columna existe en la tabla de usuarios (puedes agregarla si es necesario).
+  materias: string;
 }
 
 const ProfesorPage: React.FC = () => {
-  const [profesores, setProfesores] = useState<Profesor[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [profesores, setProfesores] = useState<Profesor[]>([]); // Lista de profesores
+  const [loading, setLoading] = useState(false); // Estado de carga
+  const [carreras, setCarreras] = useState<string[]>([]); // Lista de carreras
+  const [selectedCarrera, setSelectedCarrera] = useState<string>(''); // Carrera seleccionada
 
-  // Función para buscar profesores por materia
-  const fetchProfesores = async (materia: string) => {
+  // Obtener las opciones de carreras al cargar la página
+  useEffect(() => {
+    const fetchCarreras = async () => {
+      try {
+        const response = await axios.get('/api/profesores/carreras'); // Ruta para obtener las carreras
+        setCarreras(response.data.carreras || []); // Asegura que `carreras` sea un array
+      } catch (error) {
+        console.error('Error al cargar las carreras:', error);
+        setCarreras([]); // En caso de error, setea carreras como un array vacío
+      }
+    };
+    fetchCarreras();
+  }, []);
+
+  // Función para buscar profesores por carrera
+  const fetchProfesores = async (carrera: string) => {
     setLoading(true);
     try {
-      const response = await axios.get(`/api/tutoria/search`, {
-        params: { carrera: materia },
+      const response = await axios.get('/api/profesores', {
+        params: { carrera }, // Ruta para obtener profesores filtrados por carrera
       });
-      setProfesores(response.data.profesores);
+      setProfesores(response.data || []); // Asegura que `profesores` sea un array
     } catch (error) {
       console.error('Error al buscar profesores:', error);
       setProfesores([]); // Vacía la lista en caso de error
@@ -35,10 +50,10 @@ const ProfesorPage: React.FC = () => {
     }
   };
 
-  // Manejador del filtro de búsqueda
-  const handleSearch = (value: string) => {
-    setSearchTerm(value);
-    fetchProfesores(value);
+  // Manejador de cambio en el selector de carrera
+  const handleCarreraChange = (carrera: string) => {
+    setSelectedCarrera(carrera);
+    fetchProfesores(carrera);
   };
 
   return (
@@ -55,14 +70,24 @@ const ProfesorPage: React.FC = () => {
           Escoge a tu profesor favorito y pide una tutoría
         </Typography.Title>
 
-        {/* Barra de búsqueda */}
-        <Search
-          placeholder="Filtrar profesores por materia..."
-          enterButton="Buscar"
-          size="large"
-          onSearch={handleSearch}
+        {/* Selector de carreras */}
+        <Select
+          placeholder="Selecciona una carrera"
           style={{ marginBottom: '24px', maxWidth: '600px', margin: '0 auto', display: 'block' }}
-        />
+          onChange={handleCarreraChange}
+          value={selectedCarrera}
+          size="large"
+        >
+          {carreras.length > 0 ? (
+            carreras.map((carrera) => (
+              <Option key={carrera} value={carrera}>
+                {carrera}
+              </Option>
+            ))
+          ) : (
+            <Option disabled>Cargando carreras...</Option>
+          )}
+        </Select>
 
         {/* Lista de profesores */}
         {loading ? (

@@ -10,30 +10,37 @@ const AdminPanel: React.FC = () => {
   const [form] = Form.useForm();
 
   const token = localStorage.getItem('token'); // Obtén el token desde el almacenamiento local
+  console.log(token);  // Verifica que el token esté siendo leído correctamente
+
 
   const axiosInstance = axios.create({
-    baseURL: '/api/users',
+    baseURL: 'http://localhost:5000/api/users',  // Asegúrate de incluir la URL completa
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+  
 
   const fetchUsers = async () => {
     try {
       setLoading(true);
       const response = await axiosInstance.get('/');
-      // Verificamos que la respuesta sea un arreglo
       if (Array.isArray(response.data)) {
-        setUsers(response.data);
+        setUsers(response.data); // Solo si es un arreglo
       } else {
-        throw new Error('Datos inválidos');
+        throw new Error('Datos de usuarios no válidos.');
       }
     } catch (error) {
-      message.error('Error al obtener los usuarios.');
+      message.error(error.message || 'Error al obtener los usuarios.');
     } finally {
       setLoading(false);
     }
   };
+
+  console.log(localStorage.getItem('token'));  // Debe devolver un token válido si está guardado
+  
+
+  
 
   const deleteUser = async (id: number) => {
     try {
@@ -113,12 +120,14 @@ const AdminPanel: React.FC = () => {
   ];
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
     if (!token) {
       message.error('No estás autenticado. Por favor, inicia sesión.');
       return;
     }
     fetchUsers();
-  }, [token]);
+  }, []);
+  
 
   return (
     <div style={{ padding: '24px' }}>
