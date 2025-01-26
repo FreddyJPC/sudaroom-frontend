@@ -14,28 +14,34 @@ type Clase = {
   capacidad_maxima: number;
   estado: string;
   profesor: string;
-  carrera: string;
+  reservas: string;
 };
 
 const ClassDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { token } = useAuth();
   const [classDetails, setClassDetails] = useState<Clase | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchClassDetails = async () => {
       try {
-        const response = await axios.get(`/api/clases/${id}`, {
+        const response = await axios.get(`http://localhost:5000/api/clases/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setClassDetails(response.data);
+        setClassDetails(response.data.clase);
       } catch (error) {
+        setError("No se pudieron cargar los detalles de la clase.");
         console.error("Error al obtener los detalles de la clase:", error);
       }
     };
 
     fetchClassDetails();
   }, [id, token]);
+
+  if (error) {
+    return <div className="class-details-error">{error}</div>;
+  }
 
   if (!classDetails) {
     return (
@@ -53,29 +59,24 @@ const ClassDetailsPage: React.FC = () => {
         <p className="class-description">{classDetails.descripcion}</p>
         <div className="class-info">
           <div className="class-info-section">
-            <p>
-              <strong>Profesor:</strong> {classDetails.profesor}
-            </p>
-            <p>
-              <strong>Carrera:</strong> {classDetails.carrera}
-            </p>
+            <p><strong>Profesor:</strong> {classDetails.profesor}</p>
           </div>
           <div className="class-info-section">
             <p>
               <strong>Fecha y hora:</strong>{" "}
-              {new Date(classDetails.fecha_hora).toLocaleString()}
+              {new Intl.DateTimeFormat("es-ES", {
+                dateStyle: "full",
+                timeStyle: "short",
+              }).format(new Date(classDetails.fecha_hora))}
             </p>
-            <p>
-              <strong>Duración:</strong> {classDetails.duracion} minutos
-            </p>
+            <p><strong>Duración:</strong> {classDetails.duracion} minutos</p>
           </div>
           <div className="class-info-section">
-            <p>
-              <strong>Capacidad máxima:</strong> {classDetails.capacidad_maxima}
-            </p>
-            <p>
-              <strong>Estado:</strong> {classDetails.estado}
-            </p>
+            <p><strong>Capacidad máxima:</strong> {classDetails.capacidad_maxima}</p>
+            <p><strong>Estado:</strong> {classDetails.estado}</p>
+          </div>
+          <div className="class-info-section">
+            <p><strong>Reservas:</strong> {Number(classDetails.reservas)}</p>
           </div>
         </div>
       </div>

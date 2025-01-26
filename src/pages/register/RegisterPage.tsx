@@ -12,6 +12,20 @@ import "./RegisterPage.css";
 
 const { Title, Text } = Typography;
 
+const carreras = [
+  "Desarrollo de Software",
+  "Diseño Gráfico",
+  "Redes y Telecomunicaciones",
+  "Electricidad",
+  "Gastronomía",
+  "Turismo",
+  "Enfermería",
+  "Marketing Digital",
+  "Contabilidad y Asesoría Tributaria",
+  "Educación",
+  "Talento Humano",
+];
+
 const RegisterPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
@@ -19,31 +33,27 @@ const RegisterPage: React.FC = () => {
     setLoading(true);
     console.log("Valores del formulario:", values);
 
-    // Aquí haces la petición al backend para registrar al usuario
     try {
       const response = await fetch("http://localhost:5000/api/users/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values), // Los valores del formulario se envían como JSON
+        body: JSON.stringify(values),
       });
 
       const data = await response.json();
       console.log("Respuesta del backend:", data);
 
       if (response.ok) {
-        // Manejar el éxito (redirigir al login, mostrar mensaje, etc.)
         alert("Usuario registrado con éxito.");
       } else {
-        // Manejar errores
         alert(data.message || "Ocurrió un error al registrar el usuario.");
       }
     } catch (error) {
       console.error("Error al registrar usuario:", error);
       alert("Ocurrió un error. Por favor, intenta de nuevo.");
     }
-
 
     setLoading(false);
   };
@@ -132,21 +142,24 @@ const RegisterPage: React.FC = () => {
                 </Select>
               </Form.Item>
 
-              {/* Nuevo campo de carrera */}
+              {/* Campo actualizado: Selector de carrera */}
               <Form.Item
                 label="Carrera"
                 name="carrera"
                 rules={[
                   {
                     required: true,
-                    message: "Por favor, selecciona o ingresa tu carrera.",
+                    message: "Por favor, selecciona una carrera.",
                   },
                 ]}
               >
-                <Input
-                  placeholder="Ejemplo: Desarrollo de Software"
-                  prefix={<UserOutlined />}
-                />
+                <Select placeholder="Selecciona tu carrera">
+                  {carreras.map((carrera) => (
+                    <Select.Option key={carrera} value={carrera}>
+                      {carrera}
+                    </Select.Option>
+                  ))}
+                </Select>
               </Form.Item>
 
               <Form.Item>
