@@ -2,9 +2,9 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
 interface AuthContextType {
-  userId: number | null; // ID del usuario
+  userId: number | null;  
   token: string | null;
-  role: string | null; // Rol del usuario
+  role: string | null;  
   login: (token: string) => void;
   logout: () => void;
 }
@@ -17,36 +17,67 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
-    // Recuperar token y rol desde localStorage al cargar
-    const storedToken = localStorage.getItem('token');
-    const storedRole = localStorage.getItem('role');
-    const storedUserId = localStorage.getItem('userId');
+    const loadAuthData = () => {
+      const storedToken = localStorage.getItem('token');
 
-    if (storedToken && storedRole && storedUserId) {
-      setToken(storedToken);
-      setRole(storedRole);
-      setUserId(parseInt(storedUserId, 10));
-    }
+      if (storedToken) {
+        try {
+          const decodedToken: { id: number; rol: string; exp: number } = jwtDecode(storedToken);
+
+          if (decodedToken.exp * 1000 < Date.now()) {
+            console.warn('El token ha expirado. Cerrando sesión.');
+            logout();
+            return;
+          }
+
+          setToken(storedToken);
+          setRole(decodedToken.rol);
+          setUserId(decodedToken.id);
+
+          console.log('Token cargado desde localStorage:', decodedToken);
+        } catch (error) {
+          console.error('Error al decodificar el token almacenado:', error);
+          logout();
+        }
+      }
+    };
+
+    loadAuthData();
+  }, []);
+
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'token' && !event.newValue) {
+        logout();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   const login = (token: string) => {
-    setToken(token);
-
     try {
-      // Decodificar el token para extraer el rol y el ID de usuario
-      const decodedToken: { id: number; rol: string } = jwtDecode(token);
+      const decodedToken: { id: number; rol: string; exp: number } = jwtDecode(token);
 
+      if (decodedToken.exp * 1000 < Date.now()) {
+        console.warn('Intento de inicio de sesión con un token expirado.');
+        logout();
+        return;
+      }
+
+      setToken(token);
       setRole(decodedToken.rol);
       setUserId(decodedToken.id);
 
-      // Guardar en localStorage
       localStorage.setItem('token', token);
       localStorage.setItem('role', decodedToken.rol);
       localStorage.setItem('userId', decodedToken.id.toString());
 
-      console.log('Token decodificado:', decodedToken); // Debugging
+      console.log('Inicio de sesión exitoso:', decodedToken);
     } catch (error) {
       console.error('Error al decodificar el token:', error);
+      logout();
     }
   };
 
@@ -58,6 +89,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('token');
     localStorage.removeItem('role');
     localStorage.removeItem('userId');
+
+    console.log('Sesión cerrada correctamente.');
   };
 
   return (
