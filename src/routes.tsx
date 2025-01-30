@@ -9,7 +9,7 @@ import CreateClassPage from "./pages/CreateClassPage";
 import ClassDetailsPage from "./pages/class-details/ClassDetailsPage";
 import HomePage from "./pages/HomePage"; // Página principal
 import RegisterPage from "./pages/register/RegisterPage";
-import ProfesorPage from "./pages/ProfesorPage"; // Importamos la nueva página
+import ProfesorPage from "./pages/profesor-page/ProfesorPage"; // Importamos la nueva página
 import Profile from "./pages/profile/Profile";
 
 const RouterComponent = () => {
