@@ -1,20 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {
-  Layout,
-  Typography,
-  Row,
-  Col,
-  Card,
-  Select,
-  Alert,
-  Space,
-} from 'antd';
+import { Layout, Typography, Row, Col, Card, Select, Alert } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
+import './ProfesorPage.css';
 
 const { Header, Content } = Layout;
-const { Title, Text } = Typography;
+const { Title } = Typography;
 const { Option } = Select;
 
 const API_BASE_URL = 'http://localhost:5000';
@@ -65,32 +57,20 @@ const ProfesoresPage: React.FC = () => {
     : profesores;
 
   return (
-    <Layout style={{ minHeight: '100vh', backgroundColor: '#f9f9f9' }}>
-      {/* Header */}
-      <Header style={{ backgroundColor: '#007070', padding: '16px' }}>
-        <Space size="middle">
-          <button
-            onClick={() => navigate(-1)}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: '#fff',
-              cursor: 'pointer',
-              fontSize: '16px',
-            }}
-          >
+    <Layout className="profesores-layout">
+      <Header className="profesores-header">
+        <div className="header-content">
+          <button className="back-button" onClick={() => navigate(-1)}>
             <LeftOutlined /> Volver
           </button>
-          <Title level={3} style={{ color: '#fff', margin: 0 }}>
+          <Title level={3} className="header-title">
             Profesores
           </Title>
-        </Space>
+        </div>
       </Header>
 
-      {/* Content */}
-      <Content style={{ padding: '24px' }}>
-        {/* Filtro de Carreras */}
-        <Space direction="vertical" style={{ width: '100%' }}>
+      <Content className="profesores-content">
+        <div className="filter-section">
           <Select
             placeholder="Filtrar por carrera"
             style={{ width: 300 }}
@@ -104,46 +84,39 @@ const ProfesoresPage: React.FC = () => {
               </Option>
             ))}
           </Select>
+        </div>
 
-          {/* Mensaje de Error */}
-          {error && (
-            <Alert
-              message="Error"
-              description={error}
-              type="error"
-              showIcon
-              style={{ maxWidth: '600px' }}
-            />
-          )}
-        </Space>
+        {error && (
+          <Alert
+            message="Error"
+            description={error}
+            type="error"
+            showIcon
+            style={{ marginBottom: '24px' }}
+          />
+        )}
 
-        {/* Lista de Profesores */}
-        <Row gutter={[16, 16]} style={{ marginTop: '24px' }}>
+        <Row gutter={[16, 16]}>
           {filteredProfesores.length === 0 ? (
             <Col span={24}>
-              <Text type="secondary" style={{ fontSize: '16px' }}>
+              <div className="no-results">
                 No hay profesores disponibles para la carrera seleccionada.
-              </Text>
+              </div>
             </Col>
           ) : (
             filteredProfesores.map((profesor) => (
               <Col key={profesor.id_usuario} xs={24} sm={12} lg={8}>
-                <Card
-                  title={profesor.nombre}
-                  bordered
-                  hoverable
-                  style={{
-                    borderRadius: '8px',
-                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-                  }}
-                >
-                  <Text>
-                    <strong>Correo:</strong> {profesor.correo}
-                  </Text>
-                  <br />
-                  <Text>
-                    <strong>Carrera:</strong> {profesor.carrera}
-                  </Text>
+                <Card className="profesor-card" title={profesor.nombre}>
+                  <div className="profesor-info">
+                    <div>
+                      <span className="info-label">Correo:</span>
+                      <span className="info-value">{profesor.correo}</span>
+                    </div>
+                    <div>
+                      <span className="info-label">Carrera:</span>
+                      <span className="info-value">{profesor.carrera}</span>
+                    </div>
+                  </div>
                 </Card>
               </Col>
             ))

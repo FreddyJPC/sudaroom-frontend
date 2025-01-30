@@ -3,6 +3,7 @@ import { Layout, Typography, Button, Row, Col } from 'antd'; // Usamos Row y Col
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header'; // Importamos el Header creado anteriormente
+import './DashboardPage.css';
 
 const { Content } = Layout;
 

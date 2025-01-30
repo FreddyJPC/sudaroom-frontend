@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Card, Spin, Alert, Button, Form, Input, message } from "antd";
+import { Card, Spin, Alert, Button, Form, Input, message, Avatar } from "antd";
+import { EditOutlined, SaveOutlined, CloseOutlined } from "@ant-design/icons";
 import { useAuth } from "../../context/AuthContext";
+import "./Profile.css";
 
 const API_BASE_URL = "http://localhost:5000";
 
@@ -11,99 +13,92 @@ const Profile: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
-
+  
   useEffect(() => {
     const fetchUserProfile = async () => {
-      if (!token) {
-        console.warn("Token no disponible, redirigiendo a login.");
-        return;
-      }
-  
+      if (!token) return;
       try {
         setLoading(true);
-        console.log("Token enviado:", token);
-        
         const response = await axios.get(`${API_BASE_URL}/api/users/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
-  
         setUserProfile(response.data);
       } catch (error) {
-        console.error("Error en la solicitud:", error);
-        setError(error.response?.data?.message || "Ocurrió un error inesperado.");
+        setError(
+          error.response?.data?.message || "Ocurrió un error inesperado."
+        );
       } finally {
         setLoading(false);
       }
     };
 
-    if (token !== null) {
-      fetchUserProfile();
-    }
+    fetchUserProfile();
   }, [token]);
-  
+
   const handleUpdate = async (values: any) => {
     try {
       await axios.put(
-        `${API_BASE_URL}/api/users/me${userProfile.id}`,
+        `${API_BASE_URL}/api/users/me`,
         { nombre: values.nombre, correo: values.correo },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       message.success("Perfil actualizado con éxito.");
-      setEditMode(false);
       setUserProfile({ ...userProfile, ...values });
-    } catch (err) {
+      setEditMode(false);
+    } catch {
       message.error("No se pudo actualizar el perfil.");
     }
   };
 
-  if (loading) {
+  if (loading)
     return (
-      <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <div className="profile-loading">
         <Spin size="large" />
       </div>
     );
-  }
 
-  if (error) {
+  if (error)
     return (
       <Alert
-        message="Error"
-        description={error}
-        type="error"
+      message="Error"
+      description={error}
+      type="error"
         showIcon
-        style={{ maxWidth: "600px", margin: "20px auto" }}
+        className="profile-error"
       />
     );
-  }
 
   return (
-    <div style={{ padding: "20px", maxWidth: "600px", margin: "0 auto" }}>
-      <Card title="Perfil de Usuario" bordered={false}>
+    <div className="profile-container">
+      <div className="profile-header">
+        <div className="profile-cover"></div>
+        <Avatar size={100} className="profile-avatar">
+          {userProfile?.nombre?.charAt(0).toUpperCase()}
+        </Avatar>
+      </div>
+
+      <Card bordered={false} className="profile-card">
         {!editMode ? (
-          <>
-            <p>
-              <strong>Nombre:</strong> {userProfile?.nombre}
-            </p>
-            <p>
-              <strong>Correo:</strong> {userProfile?.correo}
-            </p>
-            <p>
+          <div className="profile-info">
+            <h2 className="profile-name">{userProfile?.nombre}</h2>
+            <p className="profile-email">{userProfile?.correo}</p>
+            <p className="profile-role">
               <strong>Rol:</strong> {userProfile?.rol}
             </p>
             {userProfile?.carrera && (
-              <p>
+              <p className="profile-career">
                 <strong>Carrera:</strong> {userProfile?.carrera}
               </p>
             )}
-            <Button type="primary" onClick={() => setEditMode(true)}>
+
+            <Button
+              type="primary"
+              icon={<EditOutlined />}
+              onClick={() => setEditMode(true)}
+            >
               Editar Perfil
             </Button>
-          </>
+          </div>
         ) : (
           <Form
             layout="vertical"
@@ -116,7 +111,9 @@ const Profile: React.FC = () => {
             <Form.Item
               label="Nombre"
               name="nombre"
-              rules={[{ required: true, message: "Por favor ingresa tu nombre." }]}
+              rules={[
+                { required: true, message: "Por favor ingresa tu nombre." },
+              ]}
             >
               <Input />
             </Form.Item>
@@ -125,16 +122,21 @@ const Profile: React.FC = () => {
               name="correo"
               rules={[
                 { required: true, message: "Por favor ingresa tu correo." },
-                { type: "email", message: "Por favor ingresa un correo válido." },
+                { type: "email", message: "Correo inválido." },
               ]}
             >
               <Input />
             </Form.Item>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Button type="primary" htmlType="submit">
+            <div className="profile-buttons">
+              <Button type="primary" icon={<SaveOutlined />} htmlType="submit">
                 Guardar
               </Button>
-              <Button onClick={() => setEditMode(false)}>Cancelar</Button>
+              <Button
+                icon={<CloseOutlined />}
+                onClick={() => setEditMode(false)}
+              >
+                Cancelar
+              </Button>
             </div>
           </Form>
         )}
