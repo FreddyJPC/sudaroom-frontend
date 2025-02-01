@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import {
   Layout,
   Typography,
@@ -12,14 +12,14 @@ import {
   Select,
   Alert,
   Space,
-} from 'antd';
-import { LeftOutlined } from '@ant-design/icons';
+} from "antd";
+import BackButton from "../components/BackButton";
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
 const { Option } = Select;
 
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = "http://localhost:5000";
 
 const ClassesPage: React.FC = () => {
   const { role, token } = useAuth();
@@ -29,31 +29,33 @@ const ClassesPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const careers = [
-    'Todos',
-    'Desarrollo de Software',
-    'Diseño Gráfico',
-    'Redes y Telecomunicaciones',
-    'Electricidad',
-    'Gastronomía',
-    'Turismo',
-    'Enfermería',
-    'Marketing Digital',
-    'Contabilidad y Asesoría Tributaria',
-    'Educación',
-    'Talento Humano',
+    "Desarrollo de Software",
+    "Diseño Gráfico",
+    "Redes y Telecomunicaciones",
+    "Electricidad",
+    "Gastronomía",
+    "Turismo",
+    "Enfermería",
+    "Marketing Digital",
+    "Contabilidad y Asesoría Tributaria",
+    "Educación",
+    "Talento Humano",
   ];
 
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/clases/disponibles`, {
-          headers: { Authorization: `Bearer ${token}` },
-          params: { carrera: selectedCareer },
-        });
+        const response = await axios.get(
+          `${API_BASE_URL}/api/clases/disponibles`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+            params: { carrera: selectedCareer },
+          }
+        );
         setClasses(response.data.clases || []);
         setError(null);
       } catch (err) {
-        setError('Hubo un error al cargar las clases.');
+        setError("Hubo un error al cargar las clases.");
         setClasses([]);
         console.error(err);
       }
@@ -63,29 +65,25 @@ const ClassesPage: React.FC = () => {
   }, [selectedCareer, token]);
 
   return (
-    <Layout style={{ minHeight: '100vh', backgroundColor: '#f9f9f9' }}>
+    <Layout style={{ minHeight: "100vh", backgroundColor: "#f9f9f9" }}>
       {/* Header */}
-      <Header style={{ backgroundColor: '#007070', padding: '16px' }}>
+      <Header style={{ backgroundColor: "#008080", padding: "16px" }}>
         <Space size="middle">
-          <Button
-            icon={<LeftOutlined />}
-            onClick={() => navigate(-1)}
-            style={{ color: '#fff', borderColor: '#fff' }}
-          />
-          <Title level={3} style={{ color: '#fff', margin: 0 }}>
+          <BackButton/>
+          <Title level={3} style={{ color: "#000", margin: 0 }}>
             Clases Disponibles
           </Title>
         </Space>
       </Header>
 
       {/* Content */}
-      <Content style={{ padding: '24px' }}>
+      <Content style={{ padding: "24px" }}>
         {/* Filtro de Carreras */}
-        <Space direction="vertical" style={{ width: '100%' }}>
+        <Space direction="vertical" style={{ width: "100%" }}>
           <Select
             placeholder="Filtrar por carrera"
             style={{ width: 300 }}
-            value={selectedCareer || ''}
+            value={selectedCareer || ""}
             onChange={(value) => setSelectedCareer(value || null)}
             allowClear
           >
@@ -104,16 +102,16 @@ const ClassesPage: React.FC = () => {
               description={error}
               type="error"
               showIcon
-              style={{ maxWidth: '600px' }}
+              style={{ maxWidth: "600px" }}
             />
           )}
         </Space>
 
         {/* Lista de Clases */}
-        <Row gutter={[16, 16]} style={{ marginTop: '24px' }}>
+        <Row gutter={[16, 16]} style={{ marginTop: "24px" }}>
           {classes.length === 0 ? (
             <Col span={24}>
-              <Text type="secondary" style={{ fontSize: '16px' }}>
+              <Text type="secondary" style={{ fontSize: "16px" }}>
                 No hay clases disponibles para la carrera seleccionada.
               </Text>
             </Col>
@@ -125,8 +123,8 @@ const ClassesPage: React.FC = () => {
                   bordered
                   hoverable
                   style={{
-                    borderRadius: '8px',
-                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+                    borderRadius: "8px",
+                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
                   }}
                 >
                   <Text type="secondary">{clase.descripcion}</Text>
@@ -136,13 +134,15 @@ const ClassesPage: React.FC = () => {
                   </Text>
                   <br />
                   <Text>
-                    Fecha y hora:{' '}
-                    <strong>{new Date(clase.fecha_hora).toLocaleString()}</strong>
+                    Fecha y hora:{" "}
+                    <strong>
+                      {new Date(clase.fecha_hora).toLocaleString()}
+                    </strong>
                   </Text>
                   <Button
                     type="primary"
                     block
-                    style={{ marginTop: '16px', backgroundColor: '#015C5C' }}
+                    style={{ marginTop: "16px", backgroundColor: "#015C5C" }}
                     onClick={() => navigate(`/clases/${clase.id_clase}`)}
                   >
                     Ver Detalles
@@ -154,13 +154,13 @@ const ClassesPage: React.FC = () => {
         </Row>
 
         {/* Botón de Crear Clase */}
-        {role === 'profesor' && (
-          <div style={{ textAlign: 'center', marginTop: '24px' }}>
+        {role === "profesor" && (
+          <div style={{ textAlign: "center", marginTop: "24px" }}>
             <Button
               type="primary"
               size="large"
-              style={{ backgroundColor: '#015C5C', borderColor: '#008080' }}
-              onClick={() => navigate('/clases/crear')}
+              style={{ backgroundColor: "#015C5C", borderColor: "#008080" }}
+              onClick={() => navigate("/clases/crear")}
             >
               Crear Clase
             </Button>

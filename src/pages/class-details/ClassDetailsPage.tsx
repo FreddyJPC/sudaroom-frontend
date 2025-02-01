@@ -26,9 +26,12 @@ const ClassDetailsPage: React.FC = () => {
   useEffect(() => {
     const fetchClassDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/clases/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axios.get(
+          `http://localhost:5000/api/clases/${id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setClassDetails(response.data.clase);
       } catch (error) {
         setError("No se pudieron cargar los detalles de la clase.");
@@ -53,13 +56,17 @@ const ClassDetailsPage: React.FC = () => {
 
   return (
     <div className="class-details-container">
-      <BackButton />
       <div className="class-details-card">
+        <div className="back-button-container">
+          <BackButton />
+        </div>
         <h1 className="class-title">{classDetails.titulo}</h1>
         <p className="class-description">{classDetails.descripcion}</p>
         <div className="class-info">
           <div className="class-info-section">
-            <p><strong>Profesor:</strong> {classDetails.profesor}</p>
+            <p>
+              <strong>Profesor:</strong> {classDetails.profesor}
+            </p>
           </div>
           <div className="class-info-section">
             <p>
@@ -69,14 +76,22 @@ const ClassDetailsPage: React.FC = () => {
                 timeStyle: "short",
               }).format(new Date(classDetails.fecha_hora))}
             </p>
-            <p><strong>Duración:</strong> {classDetails.duracion} minutos</p>
+            <p>
+              <strong>Duración:</strong> {classDetails.duracion} minutos
+            </p>
           </div>
           <div className="class-info-section">
-            <p><strong>Capacidad máxima:</strong> {classDetails.capacidad_maxima}</p>
-            <p><strong>Estado:</strong> {classDetails.estado}</p>
+            <p>
+              <strong>Capacidad máxima:</strong> {classDetails.capacidad_maxima}
+            </p>
+            <p>
+              <strong>Estado:</strong> {classDetails.estado}
+            </p>
           </div>
           <div className="class-info-section">
-            <p><strong>Reservas:</strong> {Number(classDetails.reservas)}</p>
+            <p>
+              <strong>Reservas:</strong> {Number(classDetails.reservas)}
+            </p>
           </div>
         </div>
       </div>

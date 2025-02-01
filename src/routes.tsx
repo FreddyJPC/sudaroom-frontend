@@ -5,7 +5,7 @@ import AdminPanel from "./pages/admin-panel/AdminPanel";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
 import PrivateRoute from "./components/PrivateRoute";
 import ClassesPage from "./pages/ClassesPage";
-import CreateClassPage from "./pages/CreateClassPage";
+import CreateClassPage from "./pages/create-class/CreateClassPage";
 import ClassDetailsPage from "./pages/class-details/ClassDetailsPage";
 import HomePage from "./pages/HomePage"; // Página principal
 import RegisterPage from "./pages/register/RegisterPage";
@@ -40,7 +40,6 @@ const RouterComponent = () => {
         <Route path="/clases/crear" element={<CreateClassPage />} />
         <Route path="/clases/:id" element={<ClassDetailsPage />} />
         <Route path="/profesores" element={<ProfesorPage />} />
-
       </Route>
 
       {/* Rutas protegidas para administradores */}

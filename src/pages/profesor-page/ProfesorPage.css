@@ -13,12 +13,21 @@
     z-index: 1000;
   }
   
+  
   .header-content {
-    max-width: 1200px;
+    max-width: 2500px;
     margin: 0 auto;
     display: flex;
-    align-items: center;
+    align-items: start;
     gap: 16px;
+  }
+  
+  .ant-layout-content {
+    position: relative;
+    padding: 40px 24px !important;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
   }
   
   .back-button {
@@ -40,10 +49,9 @@
   }
   
   .header-title {
-    color: #fff;
     margin: 0;
     font-weight: 500;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 2px 4px rgba(245, 245, 245, 0.1);
   }
   
   /* Contenido principal */
@@ -74,9 +82,6 @@
     border-radius: 10px !important;
     border: 2px solid transparent !important;
     background-image: linear-gradient(white, white),
-      linear-gradient(90deg, #008080 0%, #4682B4 100%) !important;
-    background-origin: border-box !important;
-    background-clip: content-box, border-box !important;
   }
   
   /* Tarjetas de profesores */

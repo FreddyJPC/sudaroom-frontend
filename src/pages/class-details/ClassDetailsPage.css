@@ -1,6 +1,6 @@
 .class-details-container {
     max-width: 900px;
-    margin: 30px auto;
+    margin: 50px auto;
     padding: 20px;
     font-family: 'Roboto', sans-serif;
     color: #333;
@@ -19,7 +19,7 @@
   
   .class-title {
     font-size: 2.2rem;
-    color: #1d4ed8;
+    color: #000000;
     margin-bottom: 15px;
     border-bottom: 3px solid #008080;
     padding-bottom: 10px;
@@ -44,7 +44,7 @@
     flex: 1 1 250px;
     padding: 15px;
     background-color: #f9fafb;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #0000002e;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   }
