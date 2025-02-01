@@ -4,6 +4,7 @@ import { Card, Spin, Alert, Button, Form, Input, message, Avatar } from "antd";
 import { EditOutlined, SaveOutlined, CloseOutlined } from "@ant-design/icons";
 import { useAuth } from "../../context/AuthContext";
 import "./Profile.css";
+import BackButton from "../../components/BackButton";
 
 const API_BASE_URL = "http://localhost:5000";
 
@@ -13,7 +14,7 @@ const Profile: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
-  
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       if (!token) return;
@@ -60,9 +61,9 @@ const Profile: React.FC = () => {
   if (error)
     return (
       <Alert
-      message="Error"
-      description={error}
-      type="error"
+        message="Error"
+        description={error}
+        type="error"
         showIcon
         className="profile-error"
       />
@@ -70,6 +71,9 @@ const Profile: React.FC = () => {
 
   return (
     <div className="profile-container">
+      <div className="back-button-container">
+        <BackButton />
+      </div>
       <div className="profile-header">
         <div className="profile-cover"></div>
         <Avatar size={100} className="profile-avatar">

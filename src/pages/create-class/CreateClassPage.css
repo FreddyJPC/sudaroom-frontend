@@ -1,0 +1,112 @@
+.create-class-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #f6f9fc 0%, #eef2f7 100%);
+  padding: 2rem;
+}
+
+.create-class-card {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(0, 128, 128, 0.1) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.create-class-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #008080, #20b2aa);
+}
+
+.form-title {
+  color: #000000 !important;
+  font-size: 1.8rem !important;
+  text-align: center;
+  margin-bottom: 2rem !important;
+  font-weight: 600 !important;
+}
+
+.form-container {
+  padding: 1rem;
+}
+
+/* Estilos para los campos de entrada */
+.MuiTextField-root {
+  margin-bottom: 1.5rem !important;
+}
+
+.MuiOutlinedInput-root {
+  border-radius: 10px !important;
+  transition: all 0.3s ease !important;
+}
+
+.MuiOutlinedInput-root:hover {
+  background: rgba(0, 128, 128, 0.02);
+}
+
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #008080 !important;
+  border-width: 2px !important;
+}
+
+.back-button-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.date-time-picker:hover {
+  border-color: #000;
+}
+
+.date-time-picker:focus {
+  outline: none;
+  border-color: #008080;
+  border-width: 2px;
+}
+
+/* Estilo para el Select */
+.MuiFormControl-root {
+  margin-bottom: 1.5rem !important;
+}
+
+.MuiSelect-select {
+  border-radius: 10px !important;
+}
+
+/* Estilo para el botón */
+.submit-button {
+  background: linear-gradient(45deg, #008080, #20b2aa) !important;
+  border-radius: 10px !important;
+  padding: 12px !important;
+  text-transform: none !important;
+  font-size: 1.1rem !important;
+  transition: all 0.3s ease !important;
+  margin-top: 1rem !important;
+}
+
+.submit-button:hover {
+  box-shadow: 0 4px 15px rgba(0, 128, 128, 0.3) !important;
+  transform: translateY(-2px);
+}
+
+/* Media queries */
+@media (max-width: 600px) {
+  .create-class-container {
+    padding: 1rem;
+  }
+
+  .form-title {
+    font-size: 1.5rem !important;
+  }
+}

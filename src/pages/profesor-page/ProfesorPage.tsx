@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Layout, Typography, Row, Col, Card, Select, Alert } from 'antd';
-import { LeftOutlined } from '@ant-design/icons';
 import './ProfesorPage.css';
+import BackButton from '../../components/BackButton';
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
@@ -61,7 +61,7 @@ const ProfesoresPage: React.FC = () => {
       <Header className="profesores-header">
         <div className="header-content">
           <button className="back-button" onClick={() => navigate(-1)}>
-            <LeftOutlined /> Volver
+            <BackButton /> 
           </button>
           <Title level={3} className="header-title">
             Profesores
