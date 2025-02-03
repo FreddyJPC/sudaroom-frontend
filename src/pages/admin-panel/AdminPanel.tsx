@@ -12,7 +12,8 @@ import {
 } from "antd";
 import axios from "axios";
 import "antd/dist/reset.css";
-import Header from '../../components/Header'; // Importamos el Header creado anteriormente
+import Header from "../../components/Header"; // Importamos el Header creado anteriormente
+import BackButton from "../../components/BackButton";
 
 const { Title } = Typography;
 const { Content } = Layout;
@@ -64,7 +65,10 @@ const AdminPanel: React.FC = () => {
   const handleUpdateUser = async () => {
     try {
       const updatedValues = form.getFieldsValue();
-      await axiosInstance.put(`/usuarios/${editingUser.id_usuario}`, updatedValues);
+      await axiosInstance.put(
+        `/usuarios/${editingUser.id_usuario}`,
+        updatedValues
+      );
       message.success("Usuario actualizado con éxito.");
       setIsModalOpen(false);
       fetchUsers();
@@ -128,6 +132,7 @@ const AdminPanel: React.FC = () => {
     <Layout style={styles.layout}>
       {/* Llamada al componente Header */}
       <Header />
+      <BackButton />
 
       <Content style={styles.content}>
         <Title style={styles.title}>Panel de Administración</Title>
@@ -149,12 +154,16 @@ const AdminPanel: React.FC = () => {
           cancelText="Cancelar"
         >
           <Form form={form} layout="vertical">
-            <Form.Item name="nombre" label="Nombre" rules={[{ required: true }]}>
+            <Form.Item
+              name="nombre"
+              label="Nombre"
+              rules={[{ required: true }]}
+            >
               <Input placeholder="Ingresa el nombre" />
             </Form.Item>
             <Form.Item name="rol" label="Rol" rules={[{ required: true }]}>
-            <Input placeholder="Ingresa el rol" />
-          </Form.Item>
+              <Input placeholder="Ingresa el rol" />
+            </Form.Item>
 
             <Form.Item
               name="correo"

@@ -1,7 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Layout, List, Card, Button, Modal, Form, Input, message, Tag, Spin } from 'antd';
-import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
+import React, { useState, useEffect } from "react";
+import {
+  Layout,
+  List,
+  Card,
+  Button,
+  Modal,
+  Form,
+  Input,
+  message,
+  Tag,
+  Spin,
+} from "antd";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import BackButton from "../components/BackButton";
 
 const { Content } = Layout;
 
@@ -16,37 +28,37 @@ const BuzonPage: React.FC = () => {
   // Definición de estilos para la página
   const styles = {
     content: {
-      padding: '24px',
-      background: '#fff',
+      padding: "24px",
+      background: "#fff",
       fontFamily: "'Poppins', sans-serif",
-      minHeight: '100vh',
+      minHeight: "100vh",
     },
     heading: {
-      color: '#00AFB5',
+      color: "#00AFB5",
       fontFamily: "'Poppins', sans-serif",
-      marginBottom: '24px',
-      fontSize: '2rem',
+      marginBottom: "24px",
+      fontSize: "2rem",
       fontWeight: 600,
     },
     card: {
       marginBottom: 16,
-      borderRadius: '8px',
-      boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+      borderRadius: "8px",
+      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
     },
     cardTitle: {
       margin: 0,
-      color: '#00AFB5',
-      fontSize: '1.4rem',
+      color: "#00AFB5",
+      fontSize: "1.4rem",
       fontWeight: 600,
     },
     buttonGroup: {
-      display: 'flex',
+      display: "flex",
       gap: 16,
       marginTop: 16,
     },
     spinContainer: {
-      textAlign: 'center' as 'center',
-      padding: '40px 0',
+      textAlign: "center" as "center",
+      padding: "40px 0",
     },
   };
 
@@ -65,8 +77,8 @@ const BuzonPage: React.FC = () => {
       );
       setSolicitudes(response.data.data || []); // Se asume que la respuesta es { success: true, data: [...] }
     } catch (error) {
-      console.error('Error al cargar solicitudes:', error);
-      message.error('Error al cargar las solicitudes.');
+      console.error("Error al cargar solicitudes:", error);
+      message.error("Error al cargar las solicitudes.");
     } finally {
       setLoading(false);
     }
@@ -82,18 +94,18 @@ const BuzonPage: React.FC = () => {
     try {
       await axios.put(
         `http://localhost:5000/api/solicitudes/solicitudes/${solicitud.id_solicitud}/responder`,
-        { estado: 'aceptada' },
+        { estado: "aceptada" },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      message.success('Solicitud aceptada.');
+      message.success("Solicitud aceptada.");
       fetchSolicitudes();
     } catch (error) {
-      console.error('Error al aceptar la solicitud:', error);
-      message.error('No se pudo aceptar la solicitud.');
+      console.error("Error al aceptar la solicitud:", error);
+      message.error("No se pudo aceptar la solicitud.");
     }
   };
 
@@ -109,20 +121,20 @@ const BuzonPage: React.FC = () => {
     try {
       await axios.put(
         `http://localhost:5000/api/solicitudes/solicitudes/${selectedSolicitud.id_solicitud}/responder`,
-        { estado: 'rechazada', motivo_rechazo: values.motivo },
+        { estado: "rechazada", motivo_rechazo: values.motivo },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      message.success('Solicitud rechazada.');
+      message.success("Solicitud rechazada.");
       setRejectModalVisible(false);
       form.resetFields();
       fetchSolicitudes();
     } catch (error) {
-      console.error('Error al rechazar la solicitud:', error);
-      message.error('No se pudo rechazar la solicitud.');
+      console.error("Error al rechazar la solicitud:", error);
+      message.error("No se pudo rechazar la solicitud.");
     }
   };
 
@@ -144,22 +156,22 @@ const BuzonPage: React.FC = () => {
           <strong>Mensaje:</strong> {mensajeEstudiante}
         </p>
         <p>
-          <strong>Fecha Solicitada:</strong>{' '}
+          <strong>Fecha Solicitada:</strong>{" "}
           {new Date(fecha_solicitada).toLocaleDateString()} &nbsp;
           <strong>Duración:</strong> {duracion} hora(s)
         </p>
         <p>
-          <strong>Estado:</strong>{' '}
-          {estado === 'pendiente' && <Tag color="blue">Pendiente</Tag>}
-          {estado === 'aceptada' && <Tag color="green">Aceptada</Tag>}
-          {estado === 'rechazada' && <Tag color="red">Rechazada</Tag>}
+          <strong>Estado:</strong>{" "}
+          {estado === "pendiente" && <Tag color="blue">Pendiente</Tag>}
+          {estado === "aceptada" && <Tag color="green">Aceptada</Tag>}
+          {estado === "rechazada" && <Tag color="red">Rechazada</Tag>}
         </p>
-        {estado === 'rechazada' && motivo_rechazo && (
+        {estado === "rechazada" && motivo_rechazo && (
           <p>
             <strong>Motivo de Rechazo:</strong> {motivo_rechazo}
           </p>
         )}
-        {estado === 'pendiente' && (
+        {estado === "pendiente" && (
           <div style={styles.buttonGroup}>
             <Button type="primary" onClick={() => handleAceptar(solicitud)}>
               Aceptar
@@ -175,6 +187,8 @@ const BuzonPage: React.FC = () => {
 
   return (
     <Content style={styles.content}>
+      <BackButton />
+
       <h2 style={styles.heading}>Buzón de Solicitudes</h2>
       {loading ? (
         <div style={styles.spinContainer}>
@@ -207,7 +221,10 @@ const BuzonPage: React.FC = () => {
             label="Motivo de rechazo"
             name="motivo"
             rules={[
-              { required: true, message: 'Por favor ingresa el motivo del rechazo.' },
+              {
+                required: true,
+                message: "Por favor ingresa el motivo del rechazo.",
+              },
             ]}
           >
             <Input.TextArea rows={4} />
