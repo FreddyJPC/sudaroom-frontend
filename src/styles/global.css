@@ -1,0 +1,15 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Asegurar que Ant Design use la fuente */
+  .ant-typography,
+  .ant-btn,
+  .ant-input,
+  .ant-select,
+  .ant-card {
+    font-family: 'Poppins', sans-serif;
+  }
+  
