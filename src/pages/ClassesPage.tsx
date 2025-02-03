@@ -109,6 +109,7 @@ const ClassesPage: React.FC = () => {
     <Layout style={styles.layout}>
       {/* Componente Header para una navegación consistente */}
       <Header />
+      <BackButton />
 
       <Content style={styles.content}>
         {/* Se puede incluir un BackButton dentro del contenido si se requiere */}

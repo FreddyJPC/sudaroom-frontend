@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import {
   Layout,
   Typography,
@@ -16,16 +16,16 @@ import {
   DatePicker,
   InputNumber,
   message,
-} from 'antd';
-import './ProfesorPage.css';
-import BackButton from '../../components/BackButton';
-import { useAuth } from '../../context/AuthContext';
-import Header from '../../components/Header';
+} from "antd";
+import "./ProfesorPage.css";
+import BackButton from "../../components/BackButton";
+import { useAuth } from "../../context/AuthContext";
+import Header from "../../components/Header";
 
 const { Content } = Layout;
 const { Title } = Typography;
 const { Option } = Select;
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = "http://localhost:5000";
 
 const ProfesoresPage: React.FC = () => {
   const navigate = useNavigate();
@@ -39,18 +39,18 @@ const ProfesoresPage: React.FC = () => {
   const [form] = Form.useForm();
 
   const carreras = [
-    'Todos',
-    'Desarrollo de Software',
-    'Diseño Gráfico',
-    'Redes y Telecomunicaciones',
-    'Electricidad',
-    'Gastronomía',
-    'Turismo',
-    'Enfermería',
-    'Marketing Digital',
-    'Contabilidad y Asesoría Tributaria',
-    'Educación',
-    'Talento Humano',
+    "Todos",
+    "Desarrollo de Software",
+    "Diseño Gráfico",
+    "Redes y Telecomunicaciones",
+    "Electricidad",
+    "Gastronomia",
+    "Turismo",
+    "Enfermería",
+    "Marketing Digital",
+    "Contabilidad y Asesoría Tributaria",
+    "Educación",
+    "Talento Humano",
   ];
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const ProfesoresPage: React.FC = () => {
         setProfesores(response.data || []);
         setError(null);
       } catch (err) {
-        setError('Hubo un error al cargar los profesores.');
+        setError("Hubo un error al cargar los profesores.");
         setProfesores([]);
         console.error(err);
       }
@@ -71,7 +71,7 @@ const ProfesoresPage: React.FC = () => {
 
   const filteredProfesores = selectedCarrera
     ? profesores.filter((profesor) =>
-        selectedCarrera === 'Todos'
+        selectedCarrera === "Todos"
           ? true
           : profesor.carrera === selectedCarrera
       )
@@ -89,7 +89,7 @@ const ProfesoresPage: React.FC = () => {
 
   const handleSubmit = async (values: any) => {
     if (!userId || !token) {
-      message.error('Debes iniciar sesión para enviar una solicitud.');
+      message.error("Debes iniciar sesión para enviar una solicitud.");
       return;
     }
 
@@ -98,7 +98,7 @@ const ProfesoresPage: React.FC = () => {
         id_profesor: selectedProfesor.id_usuario,
         tema: values.tema,
         mensaje: values.mensaje,
-        fecha_solicitada: values.fecha.format('YYYY-MM-DD'),
+        fecha_solicitada: values.fecha.format("YYYY-MM-DD"),
         duracion: values.duracion,
       };
 
@@ -108,11 +108,11 @@ const ProfesoresPage: React.FC = () => {
         },
       });
 
-      message.success('Solicitud de tutoría enviada con éxito');
+      message.success("Solicitud de tutoría enviada con éxito");
       handleCancel();
     } catch (error) {
-      console.error('Error al enviar la solicitud:', error);
-      message.error('No se pudo enviar la solicitud.');
+      console.error("Error al enviar la solicitud:", error);
+      message.error("No se pudo enviar la solicitud.");
     }
   };
 
@@ -120,16 +120,18 @@ const ProfesoresPage: React.FC = () => {
     <Layout className="profesores-layout">
       {/* Se utiliza el Header compartido para lograr coherencia en la navegación */}
       <Header />
+      <BackButton />
 
       <Content className="profesores-content">
         {/* Título de la página en el contenido */}
-        <Title level={2} className="page-title">Profesores</Title>
-
+        <Title level={2} className="page-title">
+          Profesores
+        </Title>
         <div className="filter-section">
           <Select
             placeholder="Filtrar por carrera"
             style={{ width: 300 }}
-            value={selectedCarrera || ''}
+            value={selectedCarrera || ""}
             onChange={(value) => setSelectedCarrera(value || null)}
             allowClear
           >
@@ -147,7 +149,7 @@ const ProfesoresPage: React.FC = () => {
             description={error}
             type="error"
             showIcon
-            style={{ marginBottom: '24px' }}
+            style={{ marginBottom: "24px" }}
           />
         )}
 
@@ -191,30 +193,44 @@ const ProfesoresPage: React.FC = () => {
             <Form.Item
               label="Tema"
               name="tema"
-              rules={[{ required: true, message: 'Por favor ingresa el tema.' }]}
+              rules={[
+                { required: true, message: "Por favor ingresa el tema." },
+              ]}
             >
               <Input />
             </Form.Item>
             <Form.Item
               label="Mensaje"
               name="mensaje"
-              rules={[{ required: true, message: 'Por favor ingresa un mensaje explicativo.' }]}
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor ingresa un mensaje explicativo.",
+                },
+              ]}
             >
               <Input.TextArea rows={4} />
             </Form.Item>
             <Form.Item
               label="Fecha solicitada"
               name="fecha"
-              rules={[{ required: true, message: 'Por favor selecciona la fecha.' }]}
+              rules={[
+                { required: true, message: "Por favor selecciona la fecha." },
+              ]}
             >
-              <DatePicker style={{ width: '100%' }} />
+              <DatePicker style={{ width: "100%" }} />
             </Form.Item>
             <Form.Item
               label="Duración (horas)"
               name="duracion"
-              rules={[{ required: true, message: 'Por favor ingresa la duración en horas.' }]}
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor ingresa la duración en horas.",
+                },
+              ]}
             >
-              <InputNumber min={1} style={{ width: '100%' }} />
+              <InputNumber min={1} style={{ width: "100%" }} />
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit" block>
