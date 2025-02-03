@@ -2,9 +2,9 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
 interface AuthContextType {
-  userId: number | null;  
-  token: string | null;
-  role: string | null;  
+  userId: number | null | undefined;  
+  token: string | null | undefined;
+  role: string | null | undefined;  
   login: (token: string) => void;
   logout: () => void;
 }
@@ -12,9 +12,10 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [userId, setUserId] = useState<number | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [role, setRole] = useState<string | null>(null);
+  // Inicializamos en undefined para distinguir entre "cargando" y "no autenticado"
+  const [userId, setUserId] = useState<number | null | undefined>(undefined);
+  const [token, setToken] = useState<string | null | undefined>(undefined);
+  const [role, setRole] = useState<string | null | undefined>(undefined);
 
   useEffect(() => {
     const loadAuthData = () => {
@@ -39,6 +40,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           console.error('Error al decodificar el token almacenado:', error);
           logout();
         }
+      } else {
+        // Cuando no hay token almacenado, definimos los estados como null
+        setToken(null);
+        setRole(null);
+        setUserId(null);
       }
     };
 

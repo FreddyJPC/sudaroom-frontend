@@ -13,13 +13,54 @@ import {
   Alert,
   Space,
 } from "antd";
+import Header from "../components/Header";
 import BackButton from "../components/BackButton";
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const { Title, Text } = Typography;
 const { Option } = Select;
 
 const API_BASE_URL = "http://localhost:5000";
+
+// Estilos definidos en objetos para aplicar inline.
+const styles = {
+  layout: {
+    minHeight: "100vh",
+    backgroundColor: "#f9f9f9",
+    fontFamily: "'Poppins', sans-serif",
+  },
+  content: {
+    padding: "24px",
+    fontFamily: "'Poppins', sans-serif",
+  },
+  filterContainer: {
+    marginBottom: "24px",
+  },
+  alert: {
+    maxWidth: "600px",
+  },
+  row: {
+    marginTop: "24px",
+  },
+  card: {
+    borderRadius: "8px",
+    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+    border: "none",
+  },
+  detailsButton: {
+    marginTop: "16px",
+    backgroundColor: "#015C5C",
+    borderColor: "#015C5C",
+  },
+  createButtonContainer: {
+    textAlign: "center",
+    marginTop: "24px",
+  },
+  createButton: {
+    backgroundColor: "#015C5C",
+    borderColor: "#015C5C",
+  },
+};
 
 const ClassesPage: React.FC = () => {
   const { role, token } = useAuth();
@@ -65,21 +106,13 @@ const ClassesPage: React.FC = () => {
   }, [selectedCareer, token]);
 
   return (
-    <Layout style={{ minHeight: "100vh", backgroundColor: "#f9f9f9" }}>
-      {/* Header */}
-      <Header style={{ backgroundColor: "#008080", padding: "16px" }}>
-        <Space size="middle">
-          <BackButton/>
-          <Title level={3} style={{ color: "#000", margin: 0 }}>
-            Clases Disponibles
-          </Title>
-        </Space>
-      </Header>
+    <Layout style={styles.layout}>
+      {/* Componente Header para una navegación consistente */}
+      <Header />
 
-      {/* Content */}
-      <Content style={{ padding: "24px" }}>
-        {/* Filtro de Carreras */}
-        <Space direction="vertical" style={{ width: "100%" }}>
+      <Content style={styles.content}>
+        {/* Se puede incluir un BackButton dentro del contenido si se requiere */}
+        <Space direction="vertical" style={styles.filterContainer}>
           <Select
             placeholder="Filtrar por carrera"
             style={{ width: 300 }}
@@ -95,20 +128,18 @@ const ClassesPage: React.FC = () => {
             ))}
           </Select>
 
-          {/* Mensaje de Error */}
           {error && (
             <Alert
               message="Error"
               description={error}
               type="error"
               showIcon
-              style={{ maxWidth: "600px" }}
+              style={styles.alert}
             />
           )}
         </Space>
 
-        {/* Lista de Clases */}
-        <Row gutter={[16, 16]} style={{ marginTop: "24px" }}>
+        <Row gutter={[16, 16]} style={styles.row}>
           {classes.length === 0 ? (
             <Col span={24}>
               <Text type="secondary" style={{ fontSize: "16px" }}>
@@ -120,12 +151,9 @@ const ClassesPage: React.FC = () => {
               <Col key={clase.id_clase} xs={24} sm={12} lg={8}>
                 <Card
                   title={clase.titulo}
-                  bordered
+                  bordered={false}
                   hoverable
-                  style={{
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-                  }}
+                  style={styles.card}
                 >
                   <Text type="secondary">{clase.descripcion}</Text>
                   <br />
@@ -142,7 +170,7 @@ const ClassesPage: React.FC = () => {
                   <Button
                     type="primary"
                     block
-                    style={{ marginTop: "16px", backgroundColor: "#015C5C" }}
+                    style={styles.detailsButton}
                     onClick={() => navigate(`/clases/${clase.id_clase}`)}
                   >
                     Ver Detalles
@@ -153,13 +181,12 @@ const ClassesPage: React.FC = () => {
           )}
         </Row>
 
-        {/* Botón de Crear Clase */}
         {role === "profesor" && (
-          <div style={{ textAlign: "center", marginTop: "24px" }}>
+          <div style={styles.createButtonContainer}>
             <Button
               type="primary"
               size="large"
-              style={{ backgroundColor: "#015C5C", borderColor: "#008080" }}
+              style={styles.createButton}
               onClick={() => navigate("/clases/crear")}
             >
               Crear Clase

@@ -11,6 +11,7 @@ import HomePage from "./pages/HomePage"; // Página principal
 import RegisterPage from "./pages/register/RegisterPage";
 import ProfesorPage from "./pages/profesor-page/ProfesorPage"; // Importamos la nueva página
 import Profile from "./pages/profile/Profile";
+import BuzonPage from "./pages/Buzonpage";
 
 const RouterComponent = () => {
   return (
@@ -36,6 +37,7 @@ const RouterComponent = () => {
         }
       >
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/buzon" element={<BuzonPage />} />
         <Route path="/clases" element={<ClassesPage />} />
         <Route path="/clases/crear" element={<CreateClassPage />} />
         <Route path="/clases/:id" element={<ClassDetailsPage />} />
