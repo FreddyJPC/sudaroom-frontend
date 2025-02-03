@@ -3,41 +3,31 @@ import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
+  Layout,
   Card,
-  CardContent,
   Typography,
-  TextField,
+  Form,
+  Input,
   Select,
-  MenuItem,
   Button,
-  FormControl,
-  InputLabel,
-  Snackbar,
-  Alert,
-} from "@mui/material";
-import "./CreateClassPage.css";
+  DatePicker,
+  InputNumber,
+  message,
+} from "antd";
+import Header from "../../components/Header";
 import BackButton from "../../components/BackButton";
+import "./CreateClassPage.css";
+
+const { Title } = Typography;
+const { Content } = Layout;
+const { Option } = Select;
 
 const API_BASE_URL = "http://localhost:5000";
 
 const CreateClassPage: React.FC = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
-    "success"
-  );
-
-  const [formData, setFormData] = useState({
-    titulo: "",
-    descripcion: "",
-    fecha_hora: "",
-    duracion: "",
-    capacidad_maxima: "",
-    estado: "disponible",
-    carrera: "",
-  });
+  const [form] = Form.useForm();
 
   const carreras = [
     "Desarrollo de Software",
@@ -53,154 +43,185 @@ const CreateClassPage: React.FC = () => {
     "Talento Humano",
   ];
 
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (values: any) => {
+    // Convertimos el valor de fecha (un objeto moment) a una cadena en formato ISO truncado
+    const formattedValues = {
+      ...values,
+      fecha_hora: values.fecha_hora.toISOString().slice(0, 16),
+      // Convertimos los números a string si es necesario (según la API)
+      duracion: values.duracion.toString(),
+      capacidad_maxima: values.capacidad_maxima.toString(),
+    };
 
     try {
-      await axios.post(`${API_BASE_URL}/api/clases`, formData, {
+      await axios.post(`${API_BASE_URL}/api/clases`, formattedValues, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setSnackbarMessage("Clase creada con éxito");
-      setSnackbarSeverity("success");
-      setOpenSnackbar(true);
-
+      message.success("Clase creada con éxito");
       setTimeout(() => {
         navigate("/clases");
       }, 1000);
-    } catch (error) {
-      setSnackbarMessage("Error al crear la clase");
-      setSnackbarSeverity("error");
-      setOpenSnackbar(true);
+    } catch (error: any) {
+      message.error(
+        error.response?.data?.message || "Error al crear la clase"
+      );
     }
   };
 
-  const getMinDateTime = () => {
-    const now = new Date();
-    return new Date(now.getTime() - now.getTimezoneOffset() * 60000)
-      .toISOString()
-      .slice(0, 16);
+  // Función para deshabilitar fechas pasadas en el DatePicker
+  const disabledDate = (current: any) => {
+    return current && current < moment().startOf("day");
   };
 
   return (
-    <div className="create-class-container">
-      <Card className="create-class-card">
-        <div className="back-button-container">
-          <BackButton />
-        </div>
-        <CardContent>
-          <Typography className="form-title" variant="h5">
-            Crear Nueva Clase
-          </Typography>
+    <Layout style={styles.layout}>
+      {/* Componente Header en la parte superior */}
+      <Header />
 
-          <form onSubmit={handleSubmit} className="form-container">
-            <TextField
+      <Content style={styles.content}>
+        <Card style={styles.card}>
+          <div style={styles.backButtonContainer}>
+            <BackButton />
+          </div>
+          <div style={styles.formHeader}>
+            <Title level={3} style={styles.formTitle}>
+              Crear Nueva Clase
+            </Title>
+          </div>
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleSubmit}
+            style={styles.formContainer}
+          >
+            <Form.Item
               label="Título"
               name="titulo"
-              value={formData.titulo}
-              onChange={handleInputChange}
-              fullWidth
-              required
-            />
+              rules={[{ required: true, message: "Por favor ingresa el título" }]}
+            >
+              <Input />
+            </Form.Item>
 
-            <TextField
+            <Form.Item
               label="Descripción"
               name="descripcion"
-              value={formData.descripcion}
-              onChange={handleInputChange}
-              fullWidth
-              required
-              multiline
-              rows={3}
-            />
+              rules={[
+                { required: true, message: "Por favor ingresa la descripción" },
+              ]}
+            >
+              <Input.TextArea rows={3} />
+            </Form.Item>
 
-            <TextField
+            <Form.Item
               label="Fecha y hora"
-              type="datetime-local"
               name="fecha_hora"
-              value={formData.fecha_hora}
-              onChange={handleInputChange}
-              fullWidth
-              required
-              InputLabelProps={{ shrink: true }}
-              inputProps={{ min: getMinDateTime() }}
-              className="date-time-picker"
-            />
+              rules={[
+                { required: true, message: "Por favor selecciona la fecha y hora" },
+              ]}
+            >
+              <DatePicker
+                showTime
+                format="YYYY-MM-DD HH:mm"
+                disabledDate={disabledDate}
+                style={{ width: "100%" }}
+              />
+            </Form.Item>
 
-            <TextField
+            <Form.Item
               label="Duración (minutos)"
-              type="number"
               name="duracion"
-              value={formData.duracion}
-              onChange={handleInputChange}
-              fullWidth
-              required
-              inputProps={{ min: "15", max: "180" }}
-            />
+              rules={[
+                { required: true, message: "Por favor ingresa la duración" },
+              ]}
+            >
+              <InputNumber min={15} max={180} style={{ width: "100%" }} />
+            </Form.Item>
 
-            <TextField
+            <Form.Item
               label="Capacidad máxima"
-              type="number"
               name="capacidad_maxima"
-              value={formData.capacidad_maxima}
-              onChange={handleInputChange}
-              fullWidth
-              required
-              inputProps={{ min: "1", max: "50" }}
-            />
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor ingresa la capacidad máxima",
+                },
+              ]}
+            >
+              <InputNumber min={1} max={50} style={{ width: "100%" }} />
+            </Form.Item>
 
-            <FormControl fullWidth>
-              <InputLabel>Carrera</InputLabel>
-              <Select
-                name="carrera"
-                value={formData.carrera}
-                onChange={handleInputChange}
-                required
-                label="Carrera"
-              >
+            <Form.Item
+              label="Carrera"
+              name="carrera"
+              rules={[
+                { required: true, message: "Por favor selecciona la carrera" },
+              ]}
+            >
+              <Select placeholder="Selecciona la carrera">
                 {carreras.map((carrera) => (
-                  <MenuItem key={carrera} value={carrera}>
+                  <Option key={carrera} value={carrera}>
                     {carrera}
-                  </MenuItem>
+                  </Option>
                 ))}
               </Select>
-            </FormControl>
+            </Form.Item>
 
-            <Button
-              type="submit"
-              variant="contained"
-              className="submit-button"
-              fullWidth
-            >
-              Crear Clase
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
-      >
-        <Alert
-          onClose={() => setOpenSnackbar(false)}
-          severity={snackbarSeverity}
-          sx={{ width: "100%" }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-    </div>
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={styles.submitButton}
+                block
+              >
+                Crear Clase
+              </Button>
+            </Form.Item>
+          </Form>
+        </Card>
+      </Content>
+    </Layout>
   );
+};
+
+const styles = {
+  layout: {
+    minHeight: "100vh",
+    backgroundColor: "#f4f4f4",
+    fontFamily: "'Poppins', sans-serif",
+  },
+  content: {
+    padding: "24px",
+    display: "flex",
+    justifyContent: "center",
+  },
+  card: {
+    width: "100%",
+    maxWidth: "600px",
+    borderRadius: "10px",
+    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+    padding: "24px",
+    backgroundColor: "#fff",
+  },
+  backButtonContainer: {
+    marginBottom: "16px",
+  },
+  formHeader: {
+    textAlign: "center" as const,
+    marginBottom: "24px",
+  },
+  formTitle: {
+    color: "#00AFB5",
+    fontWeight: "bold" as const,
+  },
+  formContainer: {
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: "16px",
+  },
+  submitButton: {
+    backgroundColor: "#015C5C",
+    borderColor: "#015C5C",
+  },
 };
 
 export default CreateClassPage;

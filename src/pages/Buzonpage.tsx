@@ -13,17 +13,57 @@ const BuzonPage: React.FC = () => {
   const [selectedSolicitud, setSelectedSolicitud] = useState<any>(null);
   const [form] = Form.useForm();
 
+  // Definición de estilos para la página
+  const styles = {
+    content: {
+      padding: '24px',
+      background: '#fff',
+      fontFamily: "'Poppins', sans-serif",
+      minHeight: '100vh',
+    },
+    heading: {
+      color: '#00AFB5',
+      fontFamily: "'Poppins', sans-serif",
+      marginBottom: '24px',
+      fontSize: '2rem',
+      fontWeight: 600,
+    },
+    card: {
+      marginBottom: 16,
+      borderRadius: '8px',
+      boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+    },
+    cardTitle: {
+      margin: 0,
+      color: '#00AFB5',
+      fontSize: '1.4rem',
+      fontWeight: 600,
+    },
+    buttonGroup: {
+      display: 'flex',
+      gap: 16,
+      marginTop: 16,
+    },
+    spinContainer: {
+      textAlign: 'center' as 'center',
+      padding: '40px 0',
+    },
+  };
+
   // Función para obtener las solicitudes del profesor
   const fetchSolicitudes = async () => {
     if (!userId) return;
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:5000/api/solicitudes/usuario/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setSolicitudes(response.data.data || []); // Asumiendo que la respuesta es { success: true, data: [...] }
+      const response = await axios.get(
+        `http://localhost:5000/api/solicitudes/usuario/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setSolicitudes(response.data.data || []); // Se asume que la respuesta es { success: true, data: [...] }
     } catch (error) {
       console.error('Error al cargar solicitudes:', error);
       message.error('Error al cargar las solicitudes.');
@@ -88,17 +128,29 @@ const BuzonPage: React.FC = () => {
 
   // Renderizamos la tarjeta de cada solicitud
   const renderSolicitud = (solicitud: any) => {
-    const { id_solicitud, tema, mensaje: mensajeEstudiante, fecha_solicitada, duracion, estado, motivo_rechazo } = solicitud;
+    const {
+      id_solicitud,
+      tema,
+      mensaje: mensajeEstudiante,
+      fecha_solicitada,
+      duracion,
+      estado,
+      motivo_rechazo,
+    } = solicitud;
     return (
-      <Card key={id_solicitud} style={{ marginBottom: 16 }}>
-        <h3>{tema}</h3>
-        <p><strong>Mensaje:</strong> {mensajeEstudiante}</p>
+      <Card key={id_solicitud} style={styles.card}>
+        <h3 style={styles.cardTitle}>{tema}</h3>
         <p>
-          <strong>Fecha Solicitada:</strong> {new Date(fecha_solicitada).toLocaleDateString()} &nbsp;
+          <strong>Mensaje:</strong> {mensajeEstudiante}
+        </p>
+        <p>
+          <strong>Fecha Solicitada:</strong>{' '}
+          {new Date(fecha_solicitada).toLocaleDateString()} &nbsp;
           <strong>Duración:</strong> {duracion} hora(s)
         </p>
         <p>
-          <strong>Estado:</strong> {estado === 'pendiente' && <Tag color="blue">Pendiente</Tag>}
+          <strong>Estado:</strong>{' '}
+          {estado === 'pendiente' && <Tag color="blue">Pendiente</Tag>}
           {estado === 'aceptada' && <Tag color="green">Aceptada</Tag>}
           {estado === 'rechazada' && <Tag color="red">Rechazada</Tag>}
         </p>
@@ -108,7 +160,7 @@ const BuzonPage: React.FC = () => {
           </p>
         )}
         {estado === 'pendiente' && (
-          <div style={{ display: 'flex', gap: 16 }}>
+          <div style={styles.buttonGroup}>
             <Button type="primary" onClick={() => handleAceptar(solicitud)}>
               Aceptar
             </Button>
@@ -122,16 +174,20 @@ const BuzonPage: React.FC = () => {
   };
 
   return (
-    <Content style={{ padding: '24px', background: '#fff' }}>
-      <h2>Buzón de Solicitudes</h2>
+    <Content style={styles.content}>
+      <h2 style={styles.heading}>Buzón de Solicitudes</h2>
       {loading ? (
-        <Spin size="large" />
+        <div style={styles.spinContainer}>
+          <Spin size="large" />
+        </div>
       ) : solicitudes.length === 0 ? (
         <p>No tienes solicitudes pendientes.</p>
       ) : (
         <List
           dataSource={solicitudes}
-          renderItem={(solicitud) => <List.Item>{renderSolicitud(solicitud)}</List.Item>}
+          renderItem={(solicitud) => (
+            <List.Item>{renderSolicitud(solicitud)}</List.Item>
+          )}
         />
       )}
 
@@ -144,12 +200,15 @@ const BuzonPage: React.FC = () => {
           form.resetFields();
         }}
         footer={null}
+        centered
       >
         <Form form={form} layout="vertical" onFinish={handleRechazar}>
           <Form.Item
             label="Motivo de rechazo"
             name="motivo"
-            rules={[{ required: true, message: 'Por favor ingresa el motivo del rechazo.' }]}
+            rules={[
+              { required: true, message: 'Por favor ingresa el motivo del rechazo.' },
+            ]}
           >
             <Input.TextArea rows={4} />
           </Form.Item>

@@ -20,11 +20,11 @@ import {
 import './ProfesorPage.css';
 import BackButton from '../../components/BackButton';
 import { useAuth } from '../../context/AuthContext';
+import Header from '../../components/Header';
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const { Title } = Typography;
 const { Option } = Select;
-
 const API_BASE_URL = 'http://localhost:5000';
 
 const ProfesoresPage: React.FC = () => {
@@ -118,18 +118,13 @@ const ProfesoresPage: React.FC = () => {
 
   return (
     <Layout className="profesores-layout">
-      <Header className="profesores-header">
-        <div className="header-content">
-          <button className="back-button" onClick={() => navigate(-1)}>
-            <BackButton />
-          </button>
-          <Title level={3} className="header-title">
-            Profesores
-          </Title>
-        </div>
-      </Header>
+      {/* Se utiliza el Header compartido para lograr coherencia en la navegación */}
+      <Header />
 
       <Content className="profesores-content">
+        {/* Título de la página en el contenido */}
+        <Title level={2} className="page-title">Profesores</Title>
+
         <div className="filter-section">
           <Select
             placeholder="Filtrar por carrera"
@@ -203,9 +198,7 @@ const ProfesoresPage: React.FC = () => {
             <Form.Item
               label="Mensaje"
               name="mensaje"
-              rules={[
-                { required: true, message: 'Por favor ingresa un mensaje explicativo.' },
-              ]}
+              rules={[{ required: true, message: 'Por favor ingresa un mensaje explicativo.' }]}
             >
               <Input.TextArea rows={4} />
             </Form.Item>

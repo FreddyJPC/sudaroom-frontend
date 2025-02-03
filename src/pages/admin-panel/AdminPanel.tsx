@@ -1,9 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Modal, Form, Input, message, Popconfirm, Typography } from "antd";
+import {
+  Layout,
+  Table,
+  Button,
+  Modal,
+  Form,
+  Input,
+  message,
+  Popconfirm,
+  Typography,
+} from "antd";
 import axios from "axios";
 import "antd/dist/reset.css";
+import Header from '../../components/Header'; // Importamos el Header creado anteriormente
 
 const { Title } = Typography;
+const { Content } = Layout;
 
 const AdminPanel: React.FC = () => {
   const [users, setUsers] = useState<any[]>([]);
@@ -15,7 +27,7 @@ const AdminPanel: React.FC = () => {
   const token = localStorage.getItem("token");
 
   const axiosInstance = axios.create({
-    baseURL: "http://localhost:5000/api/admin", // URL corregida
+    baseURL: "http://localhost:5000/api/admin",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -24,7 +36,7 @@ const AdminPanel: React.FC = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get("/usuarios"); // ✅ URL corregida
+      const response = await axiosInstance.get("/usuarios");
       setUsers(response.data);
     } catch (error) {
       message.error("Error al obtener los usuarios.");
@@ -35,7 +47,7 @@ const AdminPanel: React.FC = () => {
 
   const deleteUser = async (id: number) => {
     try {
-      await axiosInstance.delete(`/usuarios/${id}`); // ✅ URL corregida
+      await axiosInstance.delete(`/usuarios/${id}`);
       message.success("Usuario eliminado con éxito.");
       fetchUsers();
     } catch (error) {
@@ -52,7 +64,7 @@ const AdminPanel: React.FC = () => {
   const handleUpdateUser = async () => {
     try {
       const updatedValues = form.getFieldsValue();
-      await axiosInstance.put(`/usuarios/${editingUser.id_usuario}`, updatedValues); // ✅ URL corregida
+      await axiosInstance.put(`/usuarios/${editingUser.id_usuario}`, updatedValues);
       message.success("Usuario actualizado con éxito.");
       setIsModalOpen(false);
       fetchUsers();
@@ -113,56 +125,67 @@ const AdminPanel: React.FC = () => {
   }, []);
 
   return (
-    <div style={styles.container}>
-      <Title style={styles.title}>Panel de Administración</Title>
-      <Table
-        dataSource={users}
-        columns={columns}
-        rowKey="id_usuario"
-        loading={loading}
-        bordered
-        style={styles.table}
-      />
+    <Layout style={styles.layout}>
+      {/* Llamada al componente Header */}
+      <Header />
 
-      <Modal
-        title="Editar Usuario"
-        open={isModalOpen}
-        onOk={handleUpdateUser}
-        onCancel={() => setIsModalOpen(false)}
-        okText="Actualizar"
-        cancelText="Cancelar"
-      >
-        <Form form={form} layout="vertical">
-          <Form.Item name="nombre" label="Nombre" rules={[{ required: true }]}>
-            <Input placeholder="Ingresa el nombre" />
+      <Content style={styles.content}>
+        <Title style={styles.title}>Panel de Administración</Title>
+        <Table
+          dataSource={users}
+          columns={columns}
+          rowKey="id_usuario"
+          loading={loading}
+          bordered
+          style={styles.table}
+        />
+
+        <Modal
+          title="Editar Usuario"
+          open={isModalOpen}
+          onOk={handleUpdateUser}
+          onCancel={() => setIsModalOpen(false)}
+          okText="Actualizar"
+          cancelText="Cancelar"
+        >
+          <Form form={form} layout="vertical">
+            <Form.Item name="nombre" label="Nombre" rules={[{ required: true }]}>
+              <Input placeholder="Ingresa el nombre" />
+            </Form.Item>
+            <Form.Item name="rol" label="Rol" rules={[{ required: true }]}>
+            <Input placeholder="Ingresa el rol" />
           </Form.Item>
-          <Form.Item
-            name="correo"
-            label="Correo"
-            rules={[{ required: true, type: "email" }]}
-          >
-            <Input placeholder="Ingresa el correo" />
-          </Form.Item>
-        </Form>
-      </Modal>
-    </div>
+
+            <Form.Item
+              name="correo"
+              label="Correo"
+              rules={[{ required: true, type: "email" }]}
+            >
+              <Input placeholder="Ingresa el correo" />
+            </Form.Item>
+          </Form>
+        </Modal>
+      </Content>
+    </Layout>
   );
 };
 
-// 🎨 Estilos mejorados
+// 🎨 Estilos mejorados y coherentes en toda la página
 const styles = {
-  container: {
-    padding: "24px",
-    fontFamily: "'Poppins', sans-serif",
-    backgroundColor: "#f4f4f4",
+  layout: {
     minHeight: "100vh",
+    backgroundColor: "#f4f4f4",
+    fontFamily: "'Poppins', sans-serif",
+  },
+  content: {
+    padding: "24px",
   },
   title: {
-    fontFamily: "'Poppins', sans-serif",
-    textAlign: "center",
+    textAlign: "center" as const,
     fontSize: "28px",
-    fontWeight: "bold",
+    fontWeight: "bold" as const,
     marginBottom: "20px",
+    fontFamily: "'Poppins', sans-serif",
   },
   table: {
     backgroundColor: "#fff",

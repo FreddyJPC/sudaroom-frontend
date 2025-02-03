@@ -65,7 +65,7 @@ const DashboardPage: React.FC = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 borderColor: '#1890ff',
-                color: '#1890ff',
+                
               }}
               onClick={() => navigate('/profesores')}
             >
