@@ -107,7 +107,7 @@ const Profile: React.FC = () => {
       <Content>
         <div className="profile-container">
           <div className="back-button-container">
-            <BackButton />
+            {/* <BackButton /> */}
           </div>
 
           <div className="profile-header">

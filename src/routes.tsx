@@ -12,6 +12,7 @@ import RegisterPage from "./pages/register/RegisterPage";
 import ProfesorPage from "./pages/profesor-page/ProfesorPage"; // Importamos la nueva página
 import Profile from "./pages/profile/Profile";
 import BuzonPage from "./pages/Buzonpage";
+import MisClasesPage from "./pages/MisClasesPage";
 
 const RouterComponent = () => {
   return (
@@ -20,10 +21,12 @@ const RouterComponent = () => {
       <Route path="/" element={<HomePage />} />
 
       {/* Rutas públicas */}
+
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/mi-perfil/" element={<Profile />} />
       <Route path="/admin" element={<AdminPanel />} />
+      <Route path="/MisClases" element={<MisClasesPage />} />
 
       {/* Ruta para usuarios no autorizados */}
       <Route path="/unauthorized" element={<UnauthorizedPage />} />

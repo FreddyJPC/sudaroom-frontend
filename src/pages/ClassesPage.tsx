@@ -109,10 +109,12 @@ const ClassesPage: React.FC = () => {
     <Layout style={styles.layout}>
       {/* Componente Header para una navegación consistente */}
       <Header />
-      <BackButton />
+      {/* <BackButton /> */}
 
       <Content style={styles.content}>
-        {/* Se puede incluir un BackButton dentro del contenido si se requiere */}
+      <Title level={2} className="page-title">
+          Clases
+        </Title>
         <Space direction="vertical" style={styles.filterContainer}>
           <Select
             placeholder="Filtrar por carrera"

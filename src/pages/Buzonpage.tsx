@@ -1,3 +1,4 @@
+// BuzonPage.tsx
 import React, { useState, useEffect } from "react";
 import {
   Layout,
@@ -10,12 +11,17 @@ import {
   message,
   Tag,
   Spin,
+  Typography,
 } from "antd";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import BackButton from "../components/BackButton";
+import Header from "../components/Header";
+import "./BuzonPage.css"; // Archivo de estilos (opcional)
 
 const { Content } = Layout;
+const { Title } = Typography;
+const API_BASE_URL = "http://localhost:5000";
 
 const BuzonPage: React.FC = () => {
   const { userId, token } = useAuth();
@@ -25,57 +31,20 @@ const BuzonPage: React.FC = () => {
   const [selectedSolicitud, setSelectedSolicitud] = useState<any>(null);
   const [form] = Form.useForm();
 
-  // Definición de estilos para la página
-  const styles = {
-    content: {
-      padding: "24px",
-      background: "#fff",
-      fontFamily: "'Poppins', sans-serif",
-      minHeight: "100vh",
-    },
-    heading: {
-      color: "#00AFB5",
-      fontFamily: "'Poppins', sans-serif",
-      marginBottom: "24px",
-      fontSize: "2rem",
-      fontWeight: 600,
-    },
-    card: {
-      marginBottom: 16,
-      borderRadius: "8px",
-      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-    },
-    cardTitle: {
-      margin: 0,
-      color: "#00AFB5",
-      fontSize: "1.4rem",
-      fontWeight: 600,
-    },
-    buttonGroup: {
-      display: "flex",
-      gap: 16,
-      marginTop: 16,
-    },
-    spinContainer: {
-      textAlign: "center" as "center",
-      padding: "40px 0",
-    },
-  };
-
-  // Función para obtener las solicitudes del profesor
+  // Función para cargar las solicitudes del usuario
   const fetchSolicitudes = async () => {
     if (!userId) return;
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/solicitudes/usuario/${userId}`,
+        `${API_BASE_URL}/api/solicitudes/usuario/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      setSolicitudes(response.data.data || []); // Se asume que la respuesta es { success: true, data: [...] }
+      setSolicitudes(response.data.data || []);
     } catch (error) {
       console.error("Error al cargar solicitudes:", error);
       message.error("Error al cargar las solicitudes.");
@@ -86,14 +55,14 @@ const BuzonPage: React.FC = () => {
 
   useEffect(() => {
     fetchSolicitudes();
-    // Puedes establecer un intervalo para refrescar las solicitudes si lo deseas.
+    // Si deseas actualizar las solicitudes cada cierto tiempo puedes usar un intervalo aquí.
   }, [userId, token]);
 
   // Función para aceptar una solicitud
   const handleAceptar = async (solicitud: any) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/solicitudes/solicitudes/${solicitud.id_solicitud}/responder`,
+        `${API_BASE_URL}/api/solicitudes/solicitudes/${solicitud.id_solicitud}/responder`,
         { estado: "aceptada" },
         {
           headers: {
@@ -102,7 +71,13 @@ const BuzonPage: React.FC = () => {
         }
       );
       message.success("Solicitud aceptada.");
-      fetchSolicitudes();
+      // Actualizamos el estado local
+      const updated = solicitudes.map((s) =>
+        s.id_solicitud === solicitud.id_solicitud
+          ? { ...s, estado: "aceptada" }
+          : s
+      );
+      setSolicitudes(updated);
     } catch (error) {
       console.error("Error al aceptar la solicitud:", error);
       message.error("No se pudo aceptar la solicitud.");
@@ -115,12 +90,12 @@ const BuzonPage: React.FC = () => {
     setRejectModalVisible(true);
   };
 
-  // Función para rechazar la solicitud (con motivo)
+  // Función para rechazar la solicitud con un motivo
   const handleRechazar = async (values: any) => {
     if (!selectedSolicitud) return;
     try {
       await axios.put(
-        `http://localhost:5000/api/solicitudes/solicitudes/${selectedSolicitud.id_solicitud}/responder`,
+        `${API_BASE_URL}/api/solicitudes/solicitudes/${selectedSolicitud.id_solicitud}/responder`,
         { estado: "rechazada", motivo_rechazo: values.motivo },
         {
           headers: {
@@ -131,14 +106,20 @@ const BuzonPage: React.FC = () => {
       message.success("Solicitud rechazada.");
       setRejectModalVisible(false);
       form.resetFields();
-      fetchSolicitudes();
+      // Actualizamos el estado local
+      const updated = solicitudes.map((s) =>
+        s.id_solicitud === selectedSolicitud.id_solicitud
+          ? { ...s, estado: "rechazada", motivo_rechazo: values.motivo }
+          : s
+      );
+      setSolicitudes(updated);
     } catch (error) {
       console.error("Error al rechazar la solicitud:", error);
       message.error("No se pudo rechazar la solicitud.");
     }
   };
 
-  // Renderizamos la tarjeta de cada solicitud
+  // Renderizado de cada tarjeta de solicitud
   const renderSolicitud = (solicitud: any) => {
     const {
       id_solicitud,
@@ -150,8 +131,10 @@ const BuzonPage: React.FC = () => {
       motivo_rechazo,
     } = solicitud;
     return (
-      <Card key={id_solicitud} style={styles.card}>
-        <h3 style={styles.cardTitle}>{tema}</h3>
+      <Card key={id_solicitud} className="solicitud-card">
+        <Title level={4} className="solicitud-title">
+          {tema}
+        </Title>
         <p>
           <strong>Mensaje:</strong> {mensajeEstudiante}
         </p>
@@ -172,7 +155,7 @@ const BuzonPage: React.FC = () => {
           </p>
         )}
         {estado === "pendiente" && (
-          <div style={styles.buttonGroup}>
+          <div className="button-group">
             <Button type="primary" onClick={() => handleAceptar(solicitud)}>
               Aceptar
             </Button>
@@ -186,57 +169,65 @@ const BuzonPage: React.FC = () => {
   };
 
   return (
-    <Content style={styles.content}>
-      <BackButton />
-
-      <h2 style={styles.heading}>Buzón de Solicitudes</h2>
-      {loading ? (
-        <div style={styles.spinContainer}>
-          <Spin size="large" />
+    <Layout style={{ minHeight: "100vh" }}>
+      {/* Header ubicado en la parte superior */}
+      <Header />
+      <Content className="buzon-content">
+        <div className="buzon-header">
+          {/* <BackButton /> */}
+          <Title level={2} className="buzon-heading">
+            Buzón de Solicitudes
+          </Title>
         </div>
-      ) : solicitudes.length === 0 ? (
-        <p>No tienes solicitudes pendientes.</p>
-      ) : (
-        <List
-          dataSource={solicitudes}
-          renderItem={(solicitud) => (
-            <List.Item>{renderSolicitud(solicitud)}</List.Item>
-          )}
-        />
-      )}
 
-      {/* Modal para rechazar solicitud */}
-      <Modal
-        title="Rechazar Solicitud"
-        visible={rejectModalVisible}
-        onCancel={() => {
-          setRejectModalVisible(false);
-          form.resetFields();
-        }}
-        footer={null}
-        centered
-      >
-        <Form form={form} layout="vertical" onFinish={handleRechazar}>
-          <Form.Item
-            label="Motivo de rechazo"
-            name="motivo"
-            rules={[
-              {
-                required: true,
-                message: "Por favor ingresa el motivo del rechazo.",
-              },
-            ]}
-          >
-            <Input.TextArea rows={4} />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" block>
-              Confirmar Rechazo
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
-    </Content>
+        {loading ? (
+          <div className="spin-container">
+            <Spin size="large" />
+          </div>
+        ) : solicitudes.length === 0 ? (
+          <p>No tienes solicitudes pendientes.</p>
+        ) : (
+          <List
+            dataSource={solicitudes}
+            renderItem={(solicitud) => (
+              <List.Item>{renderSolicitud(solicitud)}</List.Item>
+            )}
+          />
+        )}
+
+        {/* Modal para rechazar solicitud */}
+        <Modal
+          title="Rechazar Solicitud"
+          visible={rejectModalVisible}
+          onCancel={() => {
+            setRejectModalVisible(false);
+            form.resetFields();
+          }}
+          footer={null}
+          centered
+        >
+          <Form form={form} layout="vertical" onFinish={handleRechazar}>
+            <Form.Item
+              label="Motivo de rechazo"
+              name="motivo"
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor ingresa el motivo del rechazo.",
+                },
+              ]}
+            >
+              <Input.TextArea rows={4} />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" block>
+                Confirmar Rechazo
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+      </Content>
+    </Layout>
   );
 };
 
