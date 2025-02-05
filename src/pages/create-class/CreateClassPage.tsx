@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import moment from 'moment';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
@@ -47,7 +48,8 @@ const CreateClassPage: React.FC = () => {
     // Convertimos el valor de fecha (un objeto moment) a una cadena en formato ISO truncado
     const formattedValues = {
       ...values,
-      fecha_hora: values.fecha_hora.toISOString().slice(0, 16),
+      fecha_hora: values.fecha_hora.format("YYYY-MM-DDTHH:mm"),
+
       // Convertimos los números a string si es necesario (según la API)
       duracion: values.duracion.toString(),
       capacidad_maxima: values.capacidad_maxima.toString(),

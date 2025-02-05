@@ -39,7 +39,7 @@ const ProfesoresPage: React.FC = () => {
   const [form] = Form.useForm();
 
   const carreras = [
-    "Todos",
+    "Todas las carreras",
     "Desarrollo de Software",
     "Diseño Gráfico",
     "Redes y Telecomunicaciones",
@@ -71,7 +71,7 @@ const ProfesoresPage: React.FC = () => {
 
   const filteredProfesores = selectedCarrera
     ? profesores.filter((profesor) =>
-        selectedCarrera === "Todos"
+        selectedCarrera === ""
           ? true
           : profesor.carrera === selectedCarrera
       )
@@ -120,7 +120,7 @@ const ProfesoresPage: React.FC = () => {
     <Layout className="profesores-layout">
       {/* Se utiliza el Header compartido para lograr coherencia en la navegación */}
       <Header />
-      <BackButton />
+      {/* <BackButton /> */}
 
       <Content className="profesores-content">
         {/* Título de la página en el contenido */}
@@ -131,7 +131,7 @@ const ProfesoresPage: React.FC = () => {
           <Select
             placeholder="Filtrar por carrera"
             style={{ width: 300 }}
-            value={selectedCarrera || ""}
+            value={selectedCarrera || "Todas las carreras"}
             onChange={(value) => setSelectedCarrera(value || null)}
             allowClear
           >

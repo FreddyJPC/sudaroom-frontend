@@ -132,7 +132,7 @@ const AdminPanel: React.FC = () => {
     <Layout style={styles.layout}>
       {/* Llamada al componente Header */}
       <Header />
-      <BackButton />
+      {/* <BackButton /> */}
 
       <Content style={styles.content}>
         <Title style={styles.title}>Panel de Administración</Title>

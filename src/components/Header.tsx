@@ -119,6 +119,10 @@ const Header: React.FC = () => {
         <Link to="/mi-perfil">Mi Perfil</Link>
       </Menu.Item>
       <Divider style={{ margin: '8px 0' }} />
+      <Menu.Item key="mis-clases">
+        <Link to="/MisClases">Mis Clases</Link>
+      </Menu.Item>
+      <Divider style={{ margin: '8px 0' }} />
       <Menu.Item key="admin">
         <Link to="/admin">Administrador</Link>
       </Menu.Item>
@@ -142,14 +146,16 @@ const Header: React.FC = () => {
         fontFamily: "'Poppins', sans-serif",
       }}
     >
-      {/* Nombre de la aplicación */}
-      <div style={{ fontSize: '22px', fontWeight: 600, color: '#00AFB5' }}>
-        SUDAROOM
+      {/* Nombre de la aplicación que redirige al Dashboard */}
+      <div style={{ fontSize: '22px', fontWeight: 900, color: '#00AFB5' }}>
+        <Link to="/dashboard" style={{ color: '#00AFB5' }}>
+          SUDAROOM
+        </Link>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
         {/* Ícono de mensajería que redirige al buzón */}
-        <Link to="/buzon" style={{ color: '#00AFB5',paddingTop:6  }}>
+        <Link to="/buzon" style={{ color: '#00AFB5', paddingTop: 6 }}>
           <MessageOutlined style={{ fontSize: 22, cursor: 'pointer' }} />
         </Link>
 
