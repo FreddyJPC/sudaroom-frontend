@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, Form, Input, Button, Typography, Select } from "antd";
+import { Card, Form, Input, Button, Typography, Select, message } from "antd";
 import {
   UserOutlined,
   MailOutlined,
@@ -9,6 +9,7 @@ import {
 } from "@ant-design/icons";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./RegisterPage.css";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
@@ -28,6 +29,7 @@ const carreras = [
 
 const RegisterPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const onFinish = async (values: any) => {
     setLoading(true);
@@ -46,7 +48,8 @@ const RegisterPage: React.FC = () => {
       console.log("Respuesta del backend:", data);
 
       if (response.ok) {
-        alert("Usuario registrado con éxito.");
+        message.success("Usuario registrado con éxito.");
+        navigate("/login");
       } else {
         alert(data.message || "Ocurrió un error al registrar el usuario.");
       }
